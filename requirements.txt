@@ -3,3 +3,4 @@ psycopg2-binary==2.9.6
 uWSGI>=2.0.19.1,<2.1
 Pillow==9.5.0
 django-dotenv==1.4.2
+django-jazzmin>=2.6.0,<2.7

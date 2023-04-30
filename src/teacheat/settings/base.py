@@ -35,7 +35,7 @@ ALLOWED_HOSTS.extend(
 
 # Application definition
 INSTALLED_APPS = [
-
+    'jazzmin',
     # builtins
     'django.contrib.admin',
     'django.contrib.auth',
