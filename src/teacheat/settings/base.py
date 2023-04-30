@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # external apps
+    # 'django_celery_results',
 
     # project apps
     'apps.utils.apps.UtilsConfig',
@@ -170,3 +171,22 @@ LOGGING = {
         },
     }
 }
+
+
+# Celery settings
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
+CELERY_CACHE_BACKEND = 'django-cache'
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_IGNORE_RESULT = False
+CELERY_BROKER_TRANSPORT_OPTIONS = {'max_retries': 2}
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_SEND_SENT_EVENT = True
+CELERY_WORKER_SEND_TASK_EVENTS = True
+
+# TODO: pickling is not a good option, but I should first restructure a
+#  good service oriented design not to pass complex objects as task inputs.
+#  then changing this to json.
+# CELERY_TASK_SERIALIZER = 'pickle'
+# CELERY_ACCEPT_CONTENT = ['pickle']
+# CELERY_RESULT_SERIALIZER = 'pickle'

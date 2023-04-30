@@ -13,7 +13,7 @@ DATABASES = {
 }
 
 # Add SQL statement logging in development
-if os.environ.get('SQL_DEBUG', default="0") == 'true':
+if os.environ.get('SQL_DEBUG', default="0") == '1':
     LOGGING['loggers']['django.db'] = {
         'handlers': ['console'],
         'level': 'DEBUG',
@@ -39,4 +39,5 @@ try:
         'SHOW_TOOLBAR_CALLBACK': 'debug_toolbar.middleware.show_toolbar',
     }
 except ImportError:
-    print('Could not import "debug_toolbar" package.')
+    ...
+
