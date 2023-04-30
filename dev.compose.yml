@@ -1,37 +1,55 @@
 version: '3.9'
 
 services:
-    # app:
-    #     build:
-    #         context: .
-    #     command: >
-    #         sh -c "python manage.py wait_for_db &&
-    #                python manage.py migrate &&
-    #                python manage.py runserver 0:8000"
-    #     volumes:
-    #         - ./src:/source/src
-    #         # mounting static dirs for sharing with nginX
-    #         - ./data/web:/source/vol/web/
-    #     ports:
-    #         - 8000:8000
-    #     env_file:
-    #         - .env.sample
-    #     depends_on:
-    #         - database
+  db:
+    image: postgres:13-alpine
+    container_name: teacheat-db
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   
+    env_file:
+      - .env 
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    command: -p ${DB_PORT}
 
-    db:
-      image: postgres:13-alpine
-      container_name: teacheat-db
-      restart: always
-      volumes:
-        - postgres_data:/var/lib/postgresql/data   
-      env_file:
-        - .env 
-      ports:
-        - ${DB_PORT}:${DB_PORT}
-        
-      command: -p ${DB_PORT}
 
+  app:
+    container_name: teacheat-app
+    build:
+      context: .
+    # command: >
+    #     sh -c "python manage.py wait_for_db &&
+    #            python manage.py migrate &&
+    #            python manage.py runserver 0:9000"
+    volumes:
+      - ./src:/app/src
+        # mounting static dirs for sharing with nginX
+      - ./data/web:/app/vol/web/
+    env_file:
+      - .env
+    depends_on:
+      - db
+    expose:
+      - 8000
+
+
+
+  proxy:
+    container_name: teacheat-nginx
+    build:
+        context: ./proxy
+    restart: always
+    depends_on:
+        - app
+    ports:
+        - ${LISTEN_PORT}:${LISTEN_PORT}
+    volumes:
+        - ./data/web:/home/app/static
+    env_file:
+        - .env
+
+  
 volumes:
   postgres_data:
         

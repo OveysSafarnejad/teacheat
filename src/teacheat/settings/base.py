@@ -34,14 +34,20 @@ ALLOWED_HOSTS.extend(
 )
 
 # Application definition
-
 INSTALLED_APPS = [
+
+    # builtins
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # external apps
+
+    # project apps
+    'apps.utils.apps.UtilsConfig',
 ]
 
 MIDDLEWARE = [
@@ -106,10 +112,19 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
+
+STATIC_URL = '/static/static/'
+STATICFILES_DIRS = (
+   BASE_DIR / 'staticfiles',
+)
+STATIC_ROOT = '/app/vol/web/static'
+
+MEDIA_URL = '/static/media/'
+MEDIA_ROOT = '/app/vol/web/media'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
