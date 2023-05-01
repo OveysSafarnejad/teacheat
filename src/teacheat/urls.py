@@ -24,7 +24,7 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls')),
 ]
 
-if not settings.DEBUG:
+if settings.DEBUG:
     urlpatterns.append(
         path('admin/', admin.site.urls),
     )
