@@ -72,6 +72,8 @@ services:
     container_name: teacheat-flower
     build: .
     command: celery -A teacheat.celery.celery flower --port=5555
+    volumes:
+      - ./src:/app/src
     ports:
       - 5556:5555
     environment:

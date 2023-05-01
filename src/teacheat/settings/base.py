@@ -11,10 +11,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+# import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+# dotenv.read_dotenv(BASE_DIR.parent.parent / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -195,11 +196,17 @@ CELERY_WORKER_SEND_TASK_EVENTS = True
 # CELERY_RESULT_SERIALIZER = 'pickle'
 
 
-SECURE_SSL_REDIRECT = bool(int(os.environ.get("SECURE_SSL_REDIRECT")))
-SECURE_BROWSER_XSS_FILTER = bool(int(os.environ.get("SECURE_BROWSER_XSS_FILTER")))
-SECURE_CONTENT_TYPE_NOSNIFF = bool(int(os.environ.get("SECURE_CONTENT_TYPE_NOSNIFF")))
+SECURE_SSL_REDIRECT = bool(int(os.environ.get("SECURE_SSL_REDIRECT", default="0")))
+SECURE_BROWSER_XSS_FILTER = bool(int(os.environ.get("SECURE_BROWSER_XSS_FILTER", default="0")))
+SECURE_CONTENT_TYPE_NOSNIFF = bool(int(os.environ.get("SECURE_CONTENT_TYPE_NOSNIFF", default="0")))
 
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}

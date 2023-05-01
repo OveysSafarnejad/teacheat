@@ -16,22 +16,16 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
 
 
 urlpatterns = [
-    # path('', None),
     # path('admin/', admin.site.urls),
-    # path('api-auth/', include('rest_framework.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+    path('auth/', include('apps.auth.urls'), name='authentication')
 ]
 
 if settings.DEBUG:
-    urlpatterns.append(
-        path('admin/', admin.site.urls),
-    )
+    urlpatterns += [re_path(r'^admin/', admin.site.urls)]
 else:
-    urlpatterns.append(
-        path(settings.ADMIN_URL, admin.site.urls),
-        # compatibility issue
-        # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot'))
-    )
+    urlpatterns += [re_path(settings.ADMIN_URL, admin.site.urls)]
