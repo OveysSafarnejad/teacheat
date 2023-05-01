@@ -1,20 +1,20 @@
-from teacheat.settings.base import *
+from teacheat.settings.base import * # noqa
 
 # local database for development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'NAME': os.environ.get('POSTGRES_DB'), # noqa
+        'USER': os.environ.get('POSTGRES_USER'), # noqa
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'), # noqa
+        'HOST': os.environ.get('DB_HOST'), # noqa
+        'PORT': os.environ.get('DB_PORT'), # noqa
     }
 }
 
 # Add SQL statement logging in development
-if os.environ.get('SQL_DEBUG', default="0") == '1':
-    LOGGING['loggers']['django.db'] = {
+if os.environ.get('SQL_DEBUG', default="0") == '1': # noqa
+    LOGGING['loggers']['django.db'] = { # noqa
         'handlers': ['console'],
         'level': 'DEBUG',
         'propagate': False
@@ -24,7 +24,7 @@ if os.environ.get('SQL_DEBUG', default="0") == '1':
 # Disable caching while in development
 CACHES = {
     'default': {
-        'BACKEND': os.environ.get('CACHE_BACKEND', 'django.core.cache.backends.dummy.DummyCache')
+        'BACKEND': os.environ.get('CACHE_BACKEND', 'django.core.cache.backends.dummy.DummyCache') # noqa
     }
 }
 
@@ -33,11 +33,10 @@ CACHES = {
 try:
     import debug_toolbar  # noqa
 
-    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
-    INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware') # noqa
+    INSTALLED_APPS.append('debug_toolbar') # noqa
     DEBUG_TOOLBAR_CONFIG = {
         'SHOW_TOOLBAR_CALLBACK': 'debug_toolbar.middleware.show_toolbar',
     }
 except ImportError:
     ...
-

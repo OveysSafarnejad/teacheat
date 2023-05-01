@@ -1,3 +1,1 @@
-from teacheat.settings.base import *
-
-
+from teacheat.settings.base import * # noqa

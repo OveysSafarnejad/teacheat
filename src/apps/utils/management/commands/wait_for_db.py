@@ -6,7 +6,6 @@ from django.db.utils import OperationalError
 from psycopg2 import OperationalError as Psycopg2OpError
 
 
-
 class Command(BaseCommand):
 
     def handle(self, *args: Any, **options: Any) -> str | None:

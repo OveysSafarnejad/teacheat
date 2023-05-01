@@ -37,18 +37,17 @@ class CoreSerializer(Serializer):
 
     def to_representation(self, instance):
         represented_data = super().to_representation(instance)
-        if self.user is not None:
-            try:
-                permissions = self.Meta.permissions.items()
-                # for field, permission in permissions:
-                #     if not security_services.has_permission(self.user, *permission):
-                #         represented_data[field] = None
-            except AttributeError:
-                ...
-                # sentry_sdk.capture_message(
-                #     'Class {serializer_class} missing "Meta.permissions" attribute'.format(
-                #         serializer_class=self.__class__.__name__)
-                # )
+        # if self.user is not None:
+        #     try:
+        #         permissions = self.Meta.permissions.items()
+        #         for field, permission in permissions:
+        #             if not security_services.has_permission(self.user, *permission):
+        #                 represented_data[field] = None
+        #     except AttributeError:
+        #         sentry_sdk.capture_message(
+        #             'Class {serializer_class} missing "Meta.permissions" attribute'.format(
+        #                 serializer_class=self.__class__.__name__)
+        #         )
         return represented_data
 
     def to_internal_value(self, data):

@@ -24,8 +24,7 @@ class ModelAdminBase(admin.ModelAdmin):
         if len(self.list_display) == 0:
             self.list_display = [
                 field.name for field in model._meta.fields
-                if type(field) not in self._list_exclude and
-                   field.name not in self._list_display
+                if type(field) not in self._list_exclude and field.name not in self._list_display
             ]
 
         super().__init__(model, admin_site)

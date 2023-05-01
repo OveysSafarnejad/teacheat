@@ -90,16 +90,20 @@ WSGI_APPLICATION = 'teacheat.wsgi.application'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -114,8 +118,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -134,8 +136,6 @@ MEDIA_ROOT = '/app/vol/web/media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
 
 
 # A sample logging configuration. The only tangible logging
@@ -195,15 +195,11 @@ CELERY_WORKER_SEND_TASK_EVENTS = True
 # CELERY_RESULT_SERIALIZER = 'pickle'
 
 
-
-SECURE_SSL_REDIRECT=bool(int(os.environ.get("SECURE_SSL_REDIRECT")))
-SECURE_BROWSER_XSS_FILTER=bool(int(os.environ.get("SECURE_BROWSER_XSS_FILTER")))
-SECURE_CONTENT_TYPE_NOSNIFF=bool(int(os.environ.get("SECURE_CONTENT_TYPE_NOSNIFF")))
+SECURE_SSL_REDIRECT = bool(int(os.environ.get("SECURE_SSL_REDIRECT")))
+SECURE_BROWSER_XSS_FILTER = bool(int(os.environ.get("SECURE_BROWSER_XSS_FILTER")))
+SECURE_CONTENT_TYPE_NOSNIFF = bool(int(os.environ.get("SECURE_CONTENT_TYPE_NOSNIFF")))
 
 if not DEBUG:
-    
-    SECURE_SSL_REDIRECT=True
+    SECURE_SSL_REDIRECT = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
-
-
