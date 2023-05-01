@@ -67,6 +67,8 @@ services:
     depends_on:
       - app
       - redis
+    env_file:
+      - .env
 
   flower:
     container_name: teacheat-flower
@@ -83,6 +85,8 @@ services:
       - app
       - redis
       - celery_worker
+    env_file:
+      - .env
 
   
 volumes:
