@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
     # external apps
     # 'django_celery_results',
+    'drf_yasg',
     'rest_framework',
     'rest_framework_simplejwt',
 
