@@ -14,9 +14,26 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('', None),
+    # path('admin/', admin.site.urls),
+    # path('api-auth/', include('rest_framework.urls')),
 ]
+
+if not settings.DEBUG:
+    urlpatterns.append(
+        path('admin/', admin.site.urls),
+    )
+else:
+    urlpatterns.append(
+        path(settings.ADMIN_URL, admin.site.urls),
+        # compatibility issue
+        # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot'))
+    )
+
+
+    

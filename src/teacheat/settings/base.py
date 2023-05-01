@@ -33,6 +33,8 @@ ALLOWED_HOSTS.extend(
     )
 )
 
+
+ADMIN_URL = os.environ.get("ADMIN_URL")
 # Application definition
 INSTALLED_APPS = [
     'jazzmin',
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
 
     # external apps
     # 'django_celery_results',
+    'rest_framework',
 
     # project apps
     'apps.utils.apps.UtilsConfig',
@@ -190,3 +193,13 @@ CELERY_WORKER_SEND_TASK_EVENTS = True
 # CELERY_TASK_SERIALIZER = 'pickle'
 # CELERY_ACCEPT_CONTENT = ['pickle']
 # CELERY_RESULT_SERIALIZER = 'pickle'
+
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT=True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+else:
+    SECURE_SSL_REDIRECT=bool(int(os.environ.get("SECURE_SSL_REDIRECT")))
+    SECURE_BROWSER_XSS_FILTER=bool(int(os.environ.get("SECURE_BROWSER_XSS_FILTER")))
+    SECURE_CONTENT_TYPE_NOSNIFF=bool(int(os.environ.get("SECURE_CONTENT_TYPE_NOSNIFF")))
