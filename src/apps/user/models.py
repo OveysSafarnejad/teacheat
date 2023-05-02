@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from apps.core.validators import validate_mobile, validate_email
+from apps.user.manager import UserManager
 
 
 def profile_img_path_generator(instance, filename):
@@ -23,7 +24,11 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
-    # objects = user_manager()
+    @property
+    def get_full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    objects = UserManager()
 
     class Meta:
         verbose_name = 'User'
@@ -31,3 +36,6 @@ class User(AbstractUser):
         indexes = [
             models.Index(fields=['email'])
         ]
+
+    def __str__(self):
+        return self.full_clean
