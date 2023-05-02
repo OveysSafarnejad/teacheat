@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'apps.utils.apps.UtilsConfig',
     'apps.general.apps.GeneralAppConfig',
     'apps.user.apps.UserConfig',
+    'apps.tasties.apps.TastiesConfig',
 ]
 
 MIDDLEWARE = [
@@ -133,10 +134,12 @@ STATIC_URL = '/static/static/'
 STATICFILES_DIRS = (
    BASE_DIR / 'staticfiles',
 )
-STATIC_ROOT = '/app/vol/web/static'
+# STATIC_ROOT = '/app/vol/web/static'
+STATIC_ROOT = os.path.join(BASE_DIR.parent.parent, os.environ.get('STATIC_ROOT'))
 
 MEDIA_URL = '/static/media/'
-MEDIA_ROOT = '/app/vol/web/media'
+# MEDIA_ROOT = '/app/vol/web/media'
+MEDIA_ROOT = os.path.join(BASE_DIR.parent.parent, os.environ.get('MEDIA_ROOT'))
 
 
 # Default primary key field type

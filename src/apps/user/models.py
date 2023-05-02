@@ -25,7 +25,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
     @property
-    def get_full_name(self):
+    def full_name(self):
         return f'{self.first_name} {self.last_name}'
 
     objects = UserManager()
@@ -38,4 +38,4 @@ class User(AbstractUser):
         ]
 
     def __str__(self):
-        return self.full_clean
+        return self.full_name
