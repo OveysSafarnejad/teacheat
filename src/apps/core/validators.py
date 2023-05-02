@@ -9,10 +9,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 
 PHONE_REGEX = re.compile(r'^0\d{10}$')
-MOBILE_REGEX = re.compile(r'^09\d{9}$')
 NATIONAL_CODE_REGEX = re.compile(r'^\d{10}$')
 IBAN_REGEX = re.compile(r'^IR\d{24}$')
 CARD_NUMBER_REGEX = re.compile(r'^[^0]\d{15}$')
+
+MOBILE_REGEX = re.compile(r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
+EMAIL_REGEX = re.compile(r'[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+')
 
 
 def is_valid_mobile(mobile):
@@ -41,6 +43,34 @@ def validate_mobile(mobile):
 
     if not is_valid_mobile(mobile):
         raise ValidationError(_('Provided mobile number is invalid.'))
+
+
+def is_valid_email(email):
+    """
+    gets a value indicating that given email is valid.
+
+    :param str email: email.
+
+    :rtype: bool
+    """
+
+    if email in (None, '') or not EMAIL_REGEX.match(email):
+        return False
+
+    return True
+
+
+def validate_email(email):
+    """
+    validates given email.
+
+    :param str email: email.
+
+    :raises ValidationError: validation error.
+    """
+
+    if not is_valid_email(email):
+        raise ValidationError(_('Provided email is invalid.'))
 
 
 def is_valid_national_code(code):

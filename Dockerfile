@@ -6,6 +6,7 @@ ENV PYTHONUNBUFFERD 1
 
 
 COPY requirements.txt /app/requirements.txt
+COPY ./.env /app/.env
 COPY ./src /app/src
 COPY ./scripts /app/scripts
 

@@ -56,6 +56,8 @@ INSTALLED_APPS = [
 
     # project apps
     'apps.utils.apps.UtilsConfig',
+    'apps.general.apps.GeneralAppConfig',
+    'apps.user.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +71,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'teacheat.urls'
+AUTH_USER_MODEL = "user.User"
 
 TEMPLATES = [
     {
