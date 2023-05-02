@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from apps.core.models import BaseModel
+from apps.tasties.enums import IngredientUnit
 
 
 def generate_image_path_for_tasty(instance, filename):
@@ -12,7 +13,10 @@ def generate_image_path_for_tasty(instance, filename):
 
 class Ingredient(BaseModel):
     volume = models.PositiveSmallIntegerField()
-    unit = models.PositiveSmallIntegerField()
+    unit = models.PositiveSmallIntegerField(
+        choices=IngredientUnit.to_tuple(),
+        default=IngredientUnit.NUMBERS
+    )
     name = models.CharField(max_length=100)
     tasty = models.ForeignKey('tasties.Tasty', on_delete=models.CASCADE, related_name='ingredients')
 
