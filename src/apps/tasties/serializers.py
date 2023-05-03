@@ -16,3 +16,11 @@ class CreateTastyFoodItemSerializer(serializers.ModelSerializer):
         repr_data = super().to_representation(instance)
         repr_data['category'] = instance.category.name
         return repr_data
+
+
+class ListTastyItemSerializer(serializers.ModelSerializer):
+    category = serializers.CharField(source='category.name')
+
+    class Meta:
+        model = Tasty
+        fields = ('id', 'title', 'img', 'recepie', 'tags', 'category')
