@@ -45,7 +45,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('auth/', include('apps.auth.urls'), name='authentication'),
     path('auth/', include(user_router.urls)),
-    path('', include(tastyfood_router.urls)),
+    path('', include((tastyfood_router.urls, 'tasties'))),
 ]
 
 if settings.DEBUG:

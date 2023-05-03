@@ -7,12 +7,12 @@ from apps.core.admin import ModelAdminBase
 
 @admin.register(Ingredient)
 class IngredientAdmin(ModelAdminBase):
-    list_display = ('name', 'volume', 'unit', 'tasty',)
+    list_display = ('name', 'volume', 'unit', 'tasty_id',)
     list_display_links = ('name',)
     raw_id_fields = ('tasty',)
     list_per_page = 10
 
-    def tasty(self, entity):
+    def tasty_id(self, entity):
         return self.get_detail_page(Tasty, entity.tasty)
 
 
