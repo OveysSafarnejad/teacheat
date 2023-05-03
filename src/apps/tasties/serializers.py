@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.tasties.models import Tasty
+from apps.tasties.models import Rating, Tasty
 
 
 class CreateTastyFoodItemSerializer(serializers.ModelSerializer):
@@ -24,3 +24,17 @@ class ListTastyItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tasty
         fields = ('id', 'title', 'img', 'recepie', 'tags', 'category')
+
+
+class CreateRatingSerializer(serializers.ModelSerializer):
+
+    rating = serializers.IntegerField(min_value=1, max_value=5)
+
+    class Meta:
+        model = Rating
+        fields = ('rating',)
+        extra_kwargs = {
+            'rating': {
+                "required": True
+            }
+        }

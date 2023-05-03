@@ -39,7 +39,7 @@ class BaseModel(models.Model):
         super().save(**kwargs)
 
     class Meta:
-        ordering = ('-create_time',)
+        ordering = ('-created_time',)
         abstract = True
 
 

@@ -1,6 +1,7 @@
 import os
 import uuid
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.postgres.fields import ArrayField
 from apps.core.models import BaseModel
 from apps.tasties.enums import IngredientUnit
@@ -32,13 +33,20 @@ class Tasty(BaseModel):
     title = models.CharField(max_length=50)
     img = models.ImageField(upload_to=generate_image_path_for_tasty)
     # video
-    likes = models.PositiveIntegerField(default=0)
     recepie = models.TextField()
     duration = models.PositiveSmallIntegerField()
     tags = ArrayField(models.CharField(max_length=15))
 
     chef = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='tasties')
     category = models.ForeignKey('general.FoodCategory', on_delete=models.PROTECT, related_name='tasties')
+
+    @property
+    def liked_users_ids(self):
+        return self.likes.all().values_list('user_id', flat=True)
+
+    @property
+    def rated_users_ids(self):
+        return self.ratings.all().values_list('user_id', flat=True)
 
     @property
     def overal_score(self):
@@ -63,3 +71,16 @@ class Tasty(BaseModel):
 
     def __str__(self):
         return self.title
+
+
+class Like(BaseModel):
+    user = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='likes')
+    tasty = models.ForeignKey('tasties.Tasty', on_delete=models.PROTECT, related_name='likes')
+
+
+class Rating(BaseModel):
+    user = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='ratings')
+    tasty = models.ForeignKey('tasties.Tasty', on_delete=models.PROTECT, related_name='ratings')
+    rating = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(5), MinValueValidator(1)]
+    )

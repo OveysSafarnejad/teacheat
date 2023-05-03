@@ -20,7 +20,7 @@ class IngredientAdmin(ModelAdminBase):
 class TastyAdmin(ModelAdminBase):
 
     model = Tasty
-    list_display = ('title', 'likes', 'duration', 'category_id', 'chef_id', 'ingredients')
+    list_display = ('title', 'duration', 'category_id', 'chef_id', 'ingredients')
     list_display_links = ('title',)
     raw_id_fields = ('chef', 'category',)
     list_per_page = 10
