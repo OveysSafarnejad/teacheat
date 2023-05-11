@@ -1,0 +1,95 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:13-alpine
+    container_name: teacheat-db
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   
+    env_file:
+      - .env 
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    command: -p ${DB_PORT}
+
+
+  app:
+    container_name: teacheat-app
+    build:
+      context: .
+    volumes:
+      - ./src:/app/src
+      - ./data/web:/app/vol/web/
+    env_file:
+      - .env
+    depends_on:
+      - db
+    expose:
+      - 8000
+
+  proxy:
+    container_name: teacheat-nginx
+    build:
+        context: ./proxy
+    restart: always
+    depends_on:
+        - app
+    ports:
+        - ${LISTEN_PORT}:${LISTEN_PORT}
+    volumes:
+        - ./data/web:/home/app/static
+    env_file:
+        - .env
+
+  redis:
+    container_name: teacheat-redis
+    image: redis:6.2-alpine
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis:/var/lib/redis/data
+    #   - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    env_file:
+      - .env
+
+  celery_worker:
+    container_name: teacheat-celery-worker
+    build: .
+    command: celery -A teacheat.celery.celery worker --loglevel=info
+    volumes:
+      - ./src:/app/src
+    environment:
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    depends_on:
+      - app
+      - redis
+    env_file:
+      - .env
+
+  flower:
+    container_name: teacheat-flower
+    build: .
+    command: celery -A teacheat.celery.celery flower --port=5555
+    volumes:
+      - ./src:/app/src
+    ports:
+      - 5556:5555
+    environment:
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    depends_on:
+      - app
+      - redis
+      - celery_worker
+    env_file:
+      - .env
+
+  
+volumes:
+  postgres_data:
+  redis:
+        
