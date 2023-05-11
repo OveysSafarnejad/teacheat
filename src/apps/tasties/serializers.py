@@ -23,7 +23,7 @@ class ListTastyItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tasty
-        fields = ('id', 'title', 'img', 'recepie', 'tags', 'category')
+        fields = ('id', 'title', 'img', 'recepie', 'tags', 'category', 'chef')
 
 
 class CreateRatingSerializer(serializers.ModelSerializer):

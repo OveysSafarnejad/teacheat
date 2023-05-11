@@ -3,8 +3,10 @@ from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from apps.core.viewsets import CoreViewSet
+from apps.tasties.filters import TastyFilter
 from apps.tasties.serializers import (
     CreateTastyFoodItemSerializer,
     ListTastyItemSerializer,
@@ -22,6 +24,10 @@ class TastyFoodViewSet(
 ):
     model = Tasty
     queryset = get_all_tasties()
+
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TastyFilter
+
     serializers = {
         'create': CreateTastyFoodItemSerializer,
         'list': ListTastyItemSerializer,
