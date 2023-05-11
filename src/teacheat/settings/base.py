@@ -131,15 +131,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/static/'
+MEDIA_URL = '/static/media/'
 STATICFILES_DIRS = (
    BASE_DIR / 'staticfiles',
 )
-# STATIC_ROOT = '/app/vol/web/static'
-STATIC_ROOT = os.path.join(BASE_DIR.parent.parent, os.environ.get('STATIC_ROOT'))
 
-MEDIA_URL = '/static/media/'
-# MEDIA_ROOT = '/app/vol/web/media'
-MEDIA_ROOT = os.path.join(BASE_DIR.parent.parent, os.environ.get('MEDIA_ROOT'))
+if not DEBUG:
+    STATIC_ROOT = '/app/vol/web/static'
+    MEDIA_ROOT = '/app/vol/web/media'
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR.parent.parent, os.environ.get('STATIC_ROOT'))
+    MEDIA_ROOT = os.path.join(BASE_DIR.parent.parent, os.environ.get('MEDIA_ROOT'))
 
 
 # Default primary key field type

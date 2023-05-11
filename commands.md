@@ -5,7 +5,7 @@ generating random secret:
 
 
 runing tests using coverage
-```
+``` bash
     coverage run manage.py test
     coverage report
     coverage html
