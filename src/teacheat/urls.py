@@ -24,6 +24,7 @@ from drf_yasg import openapi
 
 from apps.user.urls import router as user_router
 from apps.tasties.urls import router as tastyfood_router
+from apps.chef.urls import router as chef_router
 
 
 schema_view = get_schema_view(
@@ -47,6 +48,8 @@ urlpatterns = [
     path('auth/', include('apps.auth.urls'), name='authentication'),
     path('auth/', include(user_router.urls)),
     path('', include((tastyfood_router.urls, 'tasties'))),
+    path('', include((chef_router.urls, 'chefs'))),
+
 ]
 
 if settings.DEBUG:

@@ -48,3 +48,5 @@ class TastyFoodsTestApi(BaseAPITestCase):
 
         response = self.client.post(url, data=tasty, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    # TODO: tasties filters should be tested

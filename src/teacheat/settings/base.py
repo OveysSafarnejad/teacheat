@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'apps.general.apps.GeneralAppConfig',
     'apps.user.apps.UserConfig',
     'apps.tasties.apps.TastiesConfig',
+    'apps.chef.apps.ChefConfig',
 ]
 
 MIDDLEWARE = [

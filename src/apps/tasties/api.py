@@ -42,7 +42,7 @@ class TastyFoodViewSet(
     }
 
     querysets = {
-        'list': get_all_tasties()
+        'list': get_all_tasties
     }
 
     @swagger_auto_schema(
