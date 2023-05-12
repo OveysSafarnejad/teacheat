@@ -6,8 +6,30 @@ on: push
 jobs:
 
     welcome: # just an id for the job
-        name: "Welcome"
+        name: Welcome
         runs-on: ubuntu-20.04
         steps:
             - name: "Welcome step"
               run: echo "Hello form first job :)"
+
+
+    test:
+        name: Application tests
+        runs-on: ubuntu-20.04
+        steps:
+
+          - name: Checkout
+            uses: actions/checkout@v2
+
+          - name: Tests
+            run: docker-compose -f dev.compose.yaml run --rm app sh -c "python manage.py test"
+
+    lint:
+        name: Lint
+        runs-on: ubuntu-20.04
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v2
+          
+          - name: Lint
+            run: docker-compose -f dev.compose.yaml run --rm app sh -c "flake8"
