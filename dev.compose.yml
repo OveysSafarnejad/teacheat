@@ -31,10 +31,6 @@ services:
       - .env
     depends_on:
       - db
-        # condition: service_healthy
-    # links:
-    #   - db
-      
     expose:
       - 8000
 
