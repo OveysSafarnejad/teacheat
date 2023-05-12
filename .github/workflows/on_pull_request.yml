@@ -7,99 +7,42 @@ on:
       - development
        
 jobs:
-    create-envfile:
-      runs-on: ubuntu-20.04
-  
-      steps:
-      - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1.3
-        with:
-          envkey_ACCESS_TOKEN_LIFETIME: ${{ secrets.ACCESS_TOKEN_LIFETIME }}
-          envkey_ADMIN_URL: ${{ secrets.ADMIN_URL }}
-          envkey_ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-          envkey_APP_HOST: ${{ secrets.APP_HOST }}
-          envkey_APP_PORT: ${{ secrets.APP_PORT }}
-          envkey_CLIENT_MAX_BODY: ${{ secrets.CLIENT_MAX_BODY }}
-          envkey_DB_HOST: ${{ secrets.DB_HOST }}
-          envkey_DB_PORT: ${{ secrets.DB_PORT }}
-          envkey_DEBUG: ${{ secrets.DEBUG }}
-          envkey_LISTEN_PORT: ${{ secrets.LISTEN_PORT }}
-          envkey_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          envkey_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          envkey_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          envkey_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          envkey_REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          envkey_SECRET_KEY: ${{ secrets.REDIS_PASSWORD }}
-          envkey_SECURE_BROWSER_XSS_FILTER: ${{ secrets.SECURE_BROWSER_XSS_FILTER }}
-          envkey_SECURE_CONTENT_TYPE_NOSNIFF: ${{ secrets.SECURE_CONTENT_TYPE_NOSNIFF }}
-          envkey_SECURE_SSL_REDIRECT: ${{ secrets.SECURE_SSL_REDIRECT }}
-
-          
-          file_name: .env
-          fail_on_empty: false
-
     test:
         name: Application tests
         runs-on: ubuntu-20.04
-        needs: [create-envfile]
-
-        # services:
-        #   db:
-        #     image: postgres
-        #     env:
-        #       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-        #       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-        #       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        #     options: >-
-        #       --health-cmd pg_isready
-        #       --health-interval 10s
-        #       --health-timeout 5s
-        #       --health-retries 5
-            
-        #     ports:
-        #       - 5450:5450
-
 
         steps:
           - name: Checkout
             uses: actions/checkout@v2
-          # - name: 'Create env file'
-          #   run: |
-          #     touch .env
+            
+          - name: 'Create env file'
+            run: |
+              touch .env
 
-          #     echo ACCESS_TOKEN_LIFETIME=${{ secrets.ACCESS_TOKEN_LIFETIME }} >> .env
-          #     echo ADMIN_URL=${{ secrets.ADMIN_URL }} >> .env
-          #     echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
-          #     echo APP_HOST=${{ secrets.APP_HOST }} >> .env
-          #     echo APP_PORT=${{ secrets.APP_PORT }} >> .env
-          #     echo CLIENT_MAX_BODY=${{ secrets.CLIENT_MAX_BODY }} >> .env
-          #     echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          #     echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-          #     echo DEBUG=${{ secrets.DEBUG }} >> .env
+              echo ACCESS_TOKEN_LIFETIME=${{ secrets.ACCESS_TOKEN_LIFETIME }} >> .env
+              echo ADMIN_URL=${{ secrets.ADMIN_URL }} >> .env
+              echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
+              echo APP_HOST=${{ secrets.APP_HOST }} >> .env
+              echo APP_PORT=${{ secrets.APP_PORT }} >> .env
+              echo CLIENT_MAX_BODY=${{ secrets.CLIENT_MAX_BODY }} >> .env
+              echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+              echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+              echo DEBUG=${{ secrets.DEBUG }} >> .env
 
-          #     echo LISTEN_PORT=${{ secrets.LISTEN_PORT }} >> .env
-          #     echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-          #     echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-          #     echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-          #     echo REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} >> .env
-          #     echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
-          #     echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-          #     echo SECURE_BROWSER_XSS_FILTER=${{ secrets.SECURE_BROWSER_XSS_FILTER }} >> .env
-          #     echo SECURE_CONTENT_TYPE_NOSNIFF=${{ secrets.SECURE_CONTENT_TYPE_NOSNIFF }} >> .env
-          #     echo SECURE_SSL_REDIRECT=${{ secrets.SECURE_SSL_REDIRECT }} >> .env
+              echo LISTEN_PORT=${{ secrets.LISTEN_PORT }} >> .env
+              echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+              echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+              echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+              echo REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} >> .env
+              echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
+              echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+              echo SECURE_BROWSER_XSS_FILTER=${{ secrets.SECURE_BROWSER_XSS_FILTER }} >> .env
+              echo SECURE_CONTENT_TYPE_NOSNIFF=${{ secrets.SECURE_CONTENT_TYPE_NOSNIFF }} >> .env
+              echo SECURE_SSL_REDIRECT=${{ secrets.SECURE_SSL_REDIRECT }} >> .env
               
-          #     cat .env
+              cat .env
 
           - name: Tests
             run: |
               docker-compose -f dev.compose.yml run --rm app sh -c "python manage.py test"
-
-#     lint:
-#         name: Lint
-#         runs-on: ubuntu-20.04
-#         steps:
-#           - name: Checkout
-#             uses: actions/checkout@v2
-          
-#           - name: Lint
-#             run: docker-compose -f dev.compose.yml run --rm app sh -c "flake8"
+              docker-compose -f dev.compose.yml run --rm app sh -c "flake8"
