@@ -45,3 +45,6 @@ jobs:
             run: |
               docker-compose -f dev.compose.yml run --rm app sh -c "python manage.py test"
               docker-compose -f dev.compose.yml run --rm app sh -c "flake8"
+            env:
+              DB_HOST: postgres
+              DB_PORT: 5450
