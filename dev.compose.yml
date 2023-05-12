@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:13-alpine
     container_name: teacheat-db
-    profiles: ["test"]
+    profiles: ["testing"]
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data   
@@ -22,7 +22,7 @@ services:
 
   app:
     container_name: teacheat-app
-    profiles: ["test"]
+    profiles: ["testing"]
     build:
       context: .
     volumes:
