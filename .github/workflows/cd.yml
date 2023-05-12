@@ -1,0 +1,13 @@
+---
+name: TEACH & EAT APPLICATION CD
+
+on: push
+
+jobs:
+
+    welcome: # just an id for the job
+        name: "Welcome"
+        runs-on: ubuntu-20.04
+        steps:
+            - name: "Welcome step"
+              run: echo "Hello form first job :)"
