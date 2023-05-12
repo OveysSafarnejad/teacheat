@@ -45,12 +45,12 @@ jobs:
 
           - name: run project
             run: |
-              docker-compose -f dev.compose.yml --profile debug up -d 
+              docker-compose -f dev.compose.yml --profile testing up -d 
 
           - name: run tests
             run: |
-              docker-compose -f dev.compose.yml --profile debug run --rm app sh -c "python manage.py test"
+              docker-compose -f dev.compose.yml --profile testing run --rm app sh -c "python manage.py test"
 
           - name: run flake8
             run: |
-              docker-compose -f dev.compose.yml --profile debug run --rm app sh -c "flake8"
+              docker-compose -f dev.compose.yml --profile testing run --rm app sh -c "flake8"
