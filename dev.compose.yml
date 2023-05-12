@@ -14,8 +14,8 @@ services:
     command: -p ${DB_PORT}
     healthcheck:
       test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
-      interval: 10s
-      timeout: 5s
+      interval: 3s
+      timeout: 1s
       retries: 10
 
 
