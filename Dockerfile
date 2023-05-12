@@ -6,9 +6,10 @@ ENV PYTHONUNBUFFERD 1
 
 
 COPY requirements.txt /app/requirements.txt
-COPY ./.env /app/.env
-COPY ./src /app/src
-COPY ./scripts /app/scripts
+COPY .env /app/.env
+COPY src /app/src
+COPY scripts /app/scripts
+COPY setup.cfg /app/setup.cfg
 
 WORKDIR /app/src
 
@@ -18,17 +19,19 @@ RUN python3 -m venv /app/.venv && \
     # unneccessary packages can be removed after installing requirements using --virtual .tmp-deps 
     apk add --update --no-cache --virtual .tmp-deps \
     build-base postgresql-dev musl-dev linux-headers && \
-    #
     /app/.venv/bin/pip install --upgrade pip && \
     /app/.venv/bin/pip install -r /app/requirements.txt && \
     # removing unneccessary packages
     apk del .tmp-deps && \
     # creating non-root user for limitted permissions
-    adduser --disabled-password --no-create-home appuser && \
+    addgroup -S appgroup && \
+    adduser -S appuser -G appgroup --disabled-password --no-create-home appuser && \  
     # creating static and media dirs and giving access for R/W to the appuser
     mkdir -p /app/vol/web/static && \
     mkdir -p /app/vol/web/media && \
-    chown -R appuser:appuser /app/vol && \
+    # chgrp -R appgroup /app/vol/ && \
+    # chown -R :appgroup /app/vol && \
+    chown -R appuser:appgroup /app/vol && \
     chmod -R 755 /app/vol && \
     chmod -R +x /app/scripts
 
