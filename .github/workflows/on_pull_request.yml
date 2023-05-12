@@ -24,11 +24,12 @@ jobs:
               echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
               echo APP_HOST=${{ secrets.APP_HOST }} >> .env
               echo APP_PORT=${{ secrets.APP_PORT }} >> .env
+              echo CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }} >> .env
+              echo CELERY_RESULT_BACKEND=${{ secrets.CELERY_RESULT_BACKEND }} >> .env
               echo CLIENT_MAX_BODY=${{ secrets.CLIENT_MAX_BODY }} >> .env
               echo DB_HOST=${{ secrets.DB_HOST }} >> .env
               echo DB_PORT=${{ secrets.DB_PORT }} >> .env
               echo DEBUG=${{ secrets.DEBUG }} >> .env
-
               echo LISTEN_PORT=${{ secrets.LISTEN_PORT }} >> .env
               echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
               echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
@@ -46,9 +47,6 @@ jobs:
             run: |
               docker-compose -f dev.compose.yml up -d 
 
-          - name: ls
-            run: ls -la
-            
           - name: run tests
             run: |
               docker-compose -f dev.compose.yml run --rm app sh -c "python manage.py test"
