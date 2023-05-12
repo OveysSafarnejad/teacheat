@@ -26,7 +26,7 @@ RUN python3 -m venv /app/.venv && \
     # removing unneccessary packages
     apk del .tmp-deps && \
     # creating non-root user for limitted permissions
-    # adduser --disabled-password --no-create-home appuser && \
+    adduser --disabled-password --no-create-home appuser && \
     # creating static and media dirs and giving access for R/W to the appuser
     mkdir -p /app/vol/web/static && \
     mkdir -p /app/vol/web/media && \
