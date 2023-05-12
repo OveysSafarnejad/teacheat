@@ -30,8 +30,9 @@ RUN python3 -m venv /app/.venv && \
     # creating static and media dirs and giving access for R/W to the appuser
     mkdir -p /app/vol/web/static && \
     mkdir -p /app/vol/web/media && \
+    chgrp appgroup app/vol/ && \
     chown -R :appgroup /app/vol && \
-    chown -R appuser:appuser /app/vol && \
+    chown -R appuser:appgroup /app/vol && \
     chmod -R 755 /app/vol && \
     chmod -R +x /app/scripts
 
