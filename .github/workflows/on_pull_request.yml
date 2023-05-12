@@ -36,6 +36,7 @@ jobs:
 
 
         steps:
+          - run: docker ps -a
           - name: Checkout
             uses: actions/checkout@v2
           - name: 'Create env file'
