@@ -12,6 +12,8 @@ COPY ./scripts /app/scripts
 
 WORKDIR /
 
+ # creating non-root user for limitted permissions
+RUN adduser --disabled-password --no-create-home appuser
 USER appuser
 
 RUN python3 -m venv /app/.venv && \
@@ -25,8 +27,7 @@ RUN python3 -m venv /app/.venv && \
     /app/.venv/bin/pip install -r /app/requirements.txt && \
     # removing unneccessary packages
     apk del .tmp-deps && \
-    # creating non-root user for limitted permissions
-    adduser --disabled-password --no-create-home appuser && \
+
     # creating static and media dirs and giving access for R/W to the appuser
     mkdir -p /app/vol/web/static && \
     mkdir -p /app/vol/web/media && \
