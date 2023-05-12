@@ -10,8 +10,9 @@ services:
     env_file:
       - .env 
     ports:
-      - ${DB_PORT}:5432
-    # command: -p ${DB_PORT}
+      - ${DB_PORT}:${DB_PORT}
+    command: -p ${DB_PORT}
+    
     # healthcheck:
     #   test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
     #   interval: 3s
