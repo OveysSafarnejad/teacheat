@@ -23,12 +23,27 @@ jobs:
           - name: 'Create env file'
             run: |
               touch .env
+
+              echo ACCESS_TOKEN_LIFETIME=${{ secrets.ACCESS_TOKEN_LIFETIME }} >> .env
+              echo ADMIN_URL=${{ secrets.ADMIN_URL }} >> .env
+              echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
+              echo APP_HOST=${{ secrets.APP_HOST }} >> .env
+              echo APP_PORT=${{ secrets.APP_PORT }} >> .env
+              echo CLIENT_MAX_BODY=${{ secrets.CLIENT_MAX_BODY }} >> .env
+              echo DB_HOST=${{ secrets.DB_HOST }} >> .env
               echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+              echo DEBUG=${{ secrets.DEBUG }} >> .env
               echo LISTEN_PORT=${{ secrets.LISTEN_PORT }} >> .env
+              echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+              echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+              echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
               echo REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} >> .env
               echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
-              echo CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }} >> .env
-              echo CELERY_RESULT_BACKEND=${{ secrets.CELERY_RESULT_BACKEND }} >> .env
+              echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+              echo SECURE_BROWSER_XSS_FILTER=${{ secrets.SECURE_BROWSER_XSS_FILTER }} >> .env
+              echo SECURE_CONTENT_TYPE_NOSNIFF=${{ secrets.SECURE_CONTENT_TYPE_NOSNIFF }} >> .env
+              echo SECURE_SSL_REDIRECT=${{ secrets.SECURE_SSL_REDIRECT }} >> .env
+              
               cat .env
 
           - name: Tests
