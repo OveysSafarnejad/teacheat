@@ -1,14 +1,19 @@
 ---
-name: Pull request validation
+name: Test Runner
 
-on: 
+on:
+  push:
+    branches:
+      - development
+      - main
+
   pull_request: 
     branches:    
       - development
        
 jobs:
     test:
-        name: Application tests
+        name: Running tests
         runs-on: ubuntu-20.04
 
         steps:
