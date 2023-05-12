@@ -4,7 +4,9 @@ services:
   db:
     image: postgres:13-alpine
     container_name: teacheat-db
-    profiles: ["testing"]
+    profiles:
+      - testing
+      - production
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data   
@@ -22,7 +24,9 @@ services:
 
   app:
     container_name: teacheat-app
-    profiles: ["testing"]
+    profiles:
+      - testing
+      - production
     build:
       context: .
     volumes:
@@ -37,6 +41,8 @@ services:
 
   proxy:
     container_name: teacheat-nginx
+    profiles:
+      - production
     build:
         context: ./proxy
     restart: always
@@ -51,6 +57,8 @@ services:
 
   redis:
     container_name: teacheat-redis
+    profiles:
+      - production
     image: redis:6.2-alpine
     command: >
       --requirepass ${REDIS_PASSWORD}
@@ -64,6 +72,8 @@ services:
 
   celery_worker:
     container_name: teacheat-celery-worker
+    profiles:
+      - production
     build: .
     command: celery -A teacheat.celery.celery worker --loglevel=info
     volumes:
@@ -79,6 +89,8 @@ services:
 
   flower:
     container_name: teacheat-flower
+    profiles:
+      - production
     build: .
     command: celery -A teacheat.celery.celery flower --port=5555
     volumes:
