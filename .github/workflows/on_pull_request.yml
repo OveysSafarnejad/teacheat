@@ -1,17 +1,18 @@
 ---
-name: TEACH & EAT APPLICATION CD
+name: Pull request validation
 
-on: push
-
+on: 
+  pull_request: 
+    branches:    
+      - development
+       
 jobs:
-
     welcome: # just an id for the job
         name: Welcome
         runs-on: ubuntu-20.04
         steps:
             - name: "Welcome step"
               run: echo "Hello form first job :)"
-
 
     test:
         name: Application tests
