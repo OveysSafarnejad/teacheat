@@ -12,11 +12,11 @@ services:
     ports:
       - ${DB_PORT}:${DB_PORT}
     command: -p ${DB_PORT}
-    healthcheck:
-      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
-      interval: 3s
-      timeout: 1s
-      retries: 10
+    # healthcheck:
+    #   test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+    #   interval: 3s
+    #   timeout: 1s
+    #   retries: 10
 
 
   app:
@@ -29,10 +29,10 @@ services:
     env_file:
       - .env
     depends_on:
-      db:
-        condition: service_healthy
-    links:
-      - db
+      - db:
+        # condition: service_healthy
+    # links:
+    #   - db
       
     expose:
       - 8000

@@ -18,21 +18,21 @@ jobs:
         name: Application tests
         runs-on: ubuntu-20.04
 
-        services:
-          db:
-            image: postgres
-            env:
-              POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-              POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-              POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-            options: >-
-              --health-cmd pg_isready
-              --health-interval 10s
-              --health-timeout 5s
-              --health-retries 5
+        # services:
+        #   db:
+        #     image: postgres
+        #     env:
+        #       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        #       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+        #       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        #     options: >-
+        #       --health-cmd pg_isready
+        #       --health-interval 10s
+        #       --health-timeout 5s
+        #       --health-retries 5
             
-            ports:
-              - 5450:5450
+        #     ports:
+        #       - 5450:5450
 
 
         steps:
