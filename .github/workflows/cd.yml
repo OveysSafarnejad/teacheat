@@ -21,8 +21,11 @@ jobs:
           - name: Checkout
             uses: actions/checkout@v2
 
+          - name: Dir print
+            run: ls -la
+
           - name: Tests
-            run: docker-compose -f dev.compose.yaml run --rm app sh -c "python manage.py test"
+            run: docker-compose -f ../dev.compose.yaml run --rm app sh -c "python manage.py test"
 
     lint:
         name: Lint
