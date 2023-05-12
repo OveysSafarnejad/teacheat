@@ -25,7 +25,7 @@ services:
       context: .
     volumes:
       - ./src:/app/src
-      - ./data/web:/app/vol/web/
+      - static_data:/app/vol/web/
     env_file:
       - .env
     depends_on:
@@ -43,7 +43,7 @@ services:
     ports:
         - ${LISTEN_PORT}:${LISTEN_PORT}
     volumes:
-        - ./data/web:/home/app/static
+        - static_data:/home/app/static
     env_file:
         - .env
 
@@ -97,4 +97,5 @@ services:
 volumes:
   postgres_data:
   redis:
+  static_data:
         
