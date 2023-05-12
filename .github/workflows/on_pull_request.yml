@@ -24,7 +24,8 @@ jobs:
               echo DB_PORT=${{ secrets.DB_PORT }} >> .env
               cat .env
               
-          - run: ls    
+          - run: |
+              ls -la    
           - name: Checkout
             uses: actions/checkout@v2
 
