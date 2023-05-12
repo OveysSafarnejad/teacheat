@@ -25,9 +25,13 @@ jobs:
               cat .env
               
           - run: |
-              ls -la    
+              ls -la
+              
           - name: Checkout
             uses: actions/checkout@v2
+          - run: |
+              ls -la
+              pwd
 
           - name: Tests
             run: docker-compose -f dev.compose.yml run --rm app sh -c "python manage.py test"
