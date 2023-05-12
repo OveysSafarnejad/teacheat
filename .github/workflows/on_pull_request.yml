@@ -17,6 +17,24 @@ jobs:
     test:
         name: Application tests
         runs-on: ubuntu-20.04
+
+        services:
+          postgres:
+            image: postgres
+            env:
+              POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+              POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+              POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+            options: >-
+              --health-cmd pg_isready
+              --health-interval 10s
+              --health-timeout 5s
+              --health-retries 5
+            
+            ports:
+              - ${DB_PORT}:${DB_PORT}
+
+
         steps:
           - name: Checkout
             uses: actions/checkout@v2
@@ -48,8 +66,6 @@ jobs:
 
           - name: Tests
             run: |
-              docker-compose -f dev.compose.yml up -d --build
-              docker ps -a
               docker-compose -f dev.compose.yml run --rm app sh -c "python manage.py test"
 
 #     lint:
