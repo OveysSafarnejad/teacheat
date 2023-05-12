@@ -24,6 +24,11 @@ jobs:
             run: |
               touch .env
               echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+              echo LISTEN_PORT=${{ secrets.LISTEN_PORT }} >> .env
+              echo REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} >> .env
+              echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
+              echo CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }} >> .env
+              echo CELERY_RESULT_BACKEND=${{ secrets.CELERY_RESULT_BACKEND }} >> .env
               cat .env
 
           - name: Tests
