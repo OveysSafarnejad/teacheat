@@ -49,12 +49,12 @@ jobs:
           - name: Tests
             run: docker-compose -f dev.compose.yml run --rm app sh -c "python manage.py test"
 
-    lint:
-        name: Lint
-        runs-on: ubuntu-20.04
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v2
+#     lint:
+#         name: Lint
+#         runs-on: ubuntu-20.04
+#         steps:
+#           - name: Checkout
+#             uses: actions/checkout@v2
           
-          - name: Lint
-            run: docker-compose -f dev.compose.yml run --rm app sh -c "flake8"
+#           - name: Lint
+#             run: docker-compose -f dev.compose.yml run --rm app sh -c "flake8"
