@@ -20,7 +20,9 @@ jobs:
         steps:
           - name: 'Create env file'
             run: |
-              echo "${{ secrets.DB_PORT }}" > .env
+              touch .env
+              echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+              cat .env
               
           - name: Checkout
             uses: actions/checkout@v2
