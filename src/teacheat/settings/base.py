@@ -213,15 +213,16 @@ SECURE_SSL_REDIRECT = bool(int(os.environ.get("SECURE_SSL_REDIRECT", default="0"
 SECURE_BROWSER_XSS_FILTER = bool(int(os.environ.get("SECURE_BROWSER_XSS_FILTER", default="0")))
 SECURE_CONTENT_TYPE_NOSNIFF = bool(int(os.environ.get("SECURE_CONTENT_TYPE_NOSNIFF", default="0")))
 
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
+# if not DEBUG:
+#     SECURE_SSL_REDIRECT = True
+#     SECURE_BROWSER_XSS_FILTER = True
+#     SECURE_CONTENT_TYPE_NOSNIFF = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'apps.core.pagination.CustomPagination',
 }
 
 
