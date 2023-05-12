@@ -14,7 +14,6 @@ jobs:
         steps:
           - name: Checkout
             uses: actions/checkout@v2
-
           - name: 'Create env file'
             run: |
               touch .env
@@ -25,8 +24,8 @@ jobs:
               echo APP_HOST=${{ secrets.APP_HOST }} >> .env
               echo APP_PORT=${{ secrets.APP_PORT }} >> .env
               echo CLIENT_MAX_BODY=${{ secrets.CLIENT_MAX_BODY }} >> .env
-              echo DB_HOST=localhost >> .env
-              echo DB_PORT=5450 >> .env
+              echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+              echo DB_PORT=${{ secrets.DB_PORT }} >> .env
               echo DEBUG=${{ secrets.DEBUG }} >> .env
 
               echo LISTEN_PORT=${{ secrets.LISTEN_PORT }} >> .env
