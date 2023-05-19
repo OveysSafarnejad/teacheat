@@ -47,7 +47,7 @@ urlpatterns = [
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('api-auth/', include('rest_framework.urls')),
     path('auth/', include('apps.auth.urls'), name='authentication'),
-    path('', include(user_router.urls)),
+    path('', include((user_router.urls, 'account'))),
     path('', include((tastyfood_router.urls, 'tasties'))),
     path('', include((chef_router.urls, 'chefs'))),
     path('', include((general_router.urls, 'cities'))),

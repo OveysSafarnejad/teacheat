@@ -6,4 +6,4 @@ from apps.general.api import CityViewSet
 app_name = 'general'
 
 router = routers.DefaultRouter()
-router.register('cities', CityViewSet, 'Cities')
+router.register('cities', CityViewSet, 'cities')

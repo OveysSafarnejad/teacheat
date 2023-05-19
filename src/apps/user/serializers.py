@@ -61,8 +61,8 @@ class UserAddressesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Address
-        fields = ('id', 'title', 'postal_code', 'city', 'city_name', 'street', 'house_number', 'apt_number')
-        read_only_fields = ('id', 'city_name')
+        fields = ('id', 'title', 'postal_code', 'city', 'city_name', 'street', 'house_number', 'apt_number', 'owner')
+        read_only_fields = ('id', 'city_name', 'owner')
 
     def create(self, validated_data):
         owner = self.context['request'].user
