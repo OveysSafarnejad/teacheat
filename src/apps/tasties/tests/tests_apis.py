@@ -40,7 +40,7 @@ class TastyFoodsTestApi(BaseAPITestCase):
         tasty = {
             "title": "test-tasty",
             "img": tmp_file,
-            "recepie": "cook it :)",
+            "recipe": "cook it :)",
             "duration": 20,
             "tags": ['tag1', 'tag2'],
             "category": self.category.id

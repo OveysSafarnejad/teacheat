@@ -49,7 +49,7 @@ class User(AbstractUser):
 
 class Address(BaseModel):
     title = models.CharField(max_length=50)
-    postal_code = models.PositiveSmallIntegerField()
+    postal_code = models.PositiveIntegerField()
     street = models.CharField(max_length=100)
     house_number = models.PositiveSmallIntegerField()
     apt_number = models.PositiveSmallIntegerField()

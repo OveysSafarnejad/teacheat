@@ -5,7 +5,7 @@ from apps.tasties.models import Rating, Tasty
 class CreateTastyFoodItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tasty
-        fields = ('id', 'title', 'img', 'recepie', 'duration', 'tags', 'category',)
+        fields = ('id', 'title', 'img', 'recipe', 'duration', 'tags', 'category',)
         read_only_fields = ('id',)
 
     def create(self, validated_data):
@@ -23,7 +23,7 @@ class ListTastyItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tasty
-        fields = ('id', 'title', 'img', 'recepie', 'tags', 'category', 'chef')
+        fields = ('id', 'title', 'img', 'recipe', 'tags', 'category', 'chef')
 
 
 class CreateRatingSerializer(serializers.ModelSerializer):
