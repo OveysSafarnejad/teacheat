@@ -19,18 +19,18 @@ class TastyFoodsTestApi(BaseAPITestCase):
         super().setUp()
 
     def test_create_tasty_unauthorized_401(self):
-        url = reverse('tasties:tasties-list')
+        url = reverse('tasties:tasty-list')
         response = self.client.post(url, data={}, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_tasty_invalid_data_400(self):
-        url = reverse('tasties:tasties-list')
+        url = reverse('tasties:tasty-list')
         self.client.force_authenticate(user=self.user)
         response = self.client.post(url, data={}, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_tasty_201(self):
-        url = reverse('tasties:tasties-list')
+        url = reverse('tasties:tasty-list')
         self.client.force_authenticate(user=self.user)
 
         image = Image.new('RGB', (100, 100))

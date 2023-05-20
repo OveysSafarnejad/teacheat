@@ -33,7 +33,7 @@ class AddressesApiTests(BaseAPITestCase):
         super().setUp()
 
     def test_address_creates_successfully_201(self):
-        url = reverse('account:addresses-list')
+        url = reverse('accounts:address-list')
         address_data = {
             "title": "address_title",
             "postal_code": 45676,
@@ -52,7 +52,7 @@ class AddressesApiTests(BaseAPITestCase):
         self.assertEqual(response['owner'], self.user.id)
 
     def test_get_addresses_list_200(self):
-        url = reverse('account:addresses-list')
+        url = reverse('accounts:address-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(json.loads(response.content)), 1)

@@ -46,7 +46,9 @@ class Order(BaseModel):
             models.Index(fields=['reference'])
         ]
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False,
+             using=None, update_fields=None):
+
         if self.reference in (None, ''):
             self.reference = generate_slug(self.__class__, search_field='reference', length=12)
 
