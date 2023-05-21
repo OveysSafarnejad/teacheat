@@ -8,6 +8,12 @@ from apps.tasties.enums import IngredientUnit
 
 
 def generate_image_path_for_tasty(instance, filename):
+    """
+    generates a unique image path for the file
+
+    :param Tasty instance:
+    :param string filename:
+    """
     ext = os.path.splitext(filename)[1]
     return os.path.join('tasties/images', f'{uuid.uuid1()}{ext}')
 
@@ -33,7 +39,7 @@ class Tasty(BaseModel):
     title = models.CharField(max_length=50)
     img = models.ImageField(upload_to=generate_image_path_for_tasty)
     # video
-    recepie = models.TextField()
+    recipe = models.TextField()
     duration = models.PositiveSmallIntegerField()
     tags = ArrayField(models.CharField(max_length=15))
 
@@ -49,9 +55,9 @@ class Tasty(BaseModel):
         return self.ratings.all().values_list('user_id', flat=True)
 
     @property
-    def overal_score(self):
+    def overall_score(self):
         """
-        A possitive integer in range(0,5)
+        A positive integer in range(0,5)
         It will be calculated based on user ratings
 
         :rtype: int

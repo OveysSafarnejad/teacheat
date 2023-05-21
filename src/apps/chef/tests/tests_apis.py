@@ -11,7 +11,7 @@ class ChefApisTest(BaseAPITestCase):
         return super().setUp()
 
     def test_getting_chefs_list_200(self):
-        url = reverse('chefs:chefs-list')
+        url = reverse('chefs:chef-list')
         response = self.client.get(url, data={}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # response = json.loads(response.content)

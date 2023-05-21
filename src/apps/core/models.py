@@ -36,7 +36,7 @@ class BaseModel(models.Model):
         if not self.creator:
             self.creator = current_user.get_current_authenticated_user()
 
-        super().save(**kwargs)
+        return super().save(**kwargs)
 
     class Meta:
         ordering = ('-created_time',)
