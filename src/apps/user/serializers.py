@@ -56,6 +56,13 @@ class UserSignUpSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserBriefSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'full_name', )
+
+
 class UserAddressesSerializer(serializers.ModelSerializer):
     city_name = serializers.CharField(source='city.name', required=False)
 

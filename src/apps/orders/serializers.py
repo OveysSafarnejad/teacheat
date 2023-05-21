@@ -7,6 +7,12 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from apps.orders.models import Order
+from apps.orders.enums import OrderStatusEnum
+from apps.user.serializers import (
+    UserBriefSerializer,
+    UserAddressesSerializer
+)
+from apps.tasties.serializers import TastyBriefSerializer
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
@@ -36,3 +42,23 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                 _(f'Invalid pk \"{address.id}\" - object does not exist.')
             )
         return address
+
+
+class UserOrderListSerializer(serializers.ModelSerializer):
+
+    owner = UserBriefSerializer()
+    address = UserAddressesSerializer()
+    tasty = TastyBriefSerializer()
+    status = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Order
+        fields = ('id', 'reference', 'owner', 'tasty', 'delivery', 'quantity', 'address', 'status')
+
+    @staticmethod
+    def get_status(order):
+
+        return dict(
+            id=order.status,
+            value=OrderStatusEnum(order.status)
+        )

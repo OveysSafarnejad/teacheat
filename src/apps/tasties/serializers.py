@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from apps.tasties.models import Rating, Tasty
+from apps.chef.serializers import ChefListSerializer
 
 
 class CreateTastyFoodItemSerializer(serializers.ModelSerializer):
@@ -38,3 +40,10 @@ class CreateRatingSerializer(serializers.ModelSerializer):
                 "required": True
             }
         }
+
+
+class TastyBriefSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tasty
+        fields = ('id', 'title', 'duration', 'chef')

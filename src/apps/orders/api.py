@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from apps.core.viewsets import CoreViewSet
 from apps.orders.models import Order
 from apps.orders.serializers import (
-    OrderCreateSerializer
+    OrderCreateSerializer,
+    UserOrderListSerializer,
 )
 from apps.orders.querysets import (
     get_all_user_orders
@@ -27,6 +28,7 @@ class OrderViewSet(
 
     serializers = {
         'create': OrderCreateSerializer,
+        'list': UserOrderListSerializer,
     }
 
     def get_queryset(self, **kwargs):
