@@ -4,6 +4,9 @@ services:
   db:
     image: postgres:13-alpine
     container_name: teacheat-db
+    profiles:
+      - testing
+      - production
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data   
@@ -12,15 +15,23 @@ services:
     ports:
       - ${DB_PORT}:${DB_PORT}
     command: -p ${DB_PORT}
-
+    
+    # healthcheck:
+    #   test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+    #   interval: 3s
+    #   timeout: 1s
+    #   retries: 10
 
   app:
     container_name: teacheat-app
+    profiles:
+      - testing
+      - production
     build:
       context: .
     volumes:
       - ./src:/app/src
-      - ./data/web:/app/vol/web/
+      - static_data:/app/vol/web/
     env_file:
       - .env
     depends_on:
@@ -30,6 +41,8 @@ services:
 
   proxy:
     container_name: teacheat-nginx
+    profiles:
+      - production
     build:
         context: ./proxy
     restart: always
@@ -38,12 +51,14 @@ services:
     ports:
         - ${LISTEN_PORT}:${LISTEN_PORT}
     volumes:
-        - ./data/web:/home/app/static
+        - static_data:/home/app/static
     env_file:
         - .env
 
   redis:
     container_name: teacheat-redis
+    profiles:
+      - production
     image: redis:6.2-alpine
     command: >
       --requirepass ${REDIS_PASSWORD}
@@ -57,6 +72,8 @@ services:
 
   celery_worker:
     container_name: teacheat-celery-worker
+    profiles:
+      - production
     build: .
     command: celery -A teacheat.celery.celery worker --loglevel=info
     volumes:
@@ -72,6 +89,8 @@ services:
 
   flower:
     container_name: teacheat-flower
+    profiles:
+      - production
     build: .
     command: celery -A teacheat.celery.celery flower --port=5555
     volumes:
@@ -92,4 +111,5 @@ services:
 volumes:
   postgres_data:
   redis:
+  static_data:
         

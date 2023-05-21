@@ -1,26 +1,26 @@
 ---
-name: Pull request validation
+name: Test Runner
 
-on: 
+on:
+  push:
+    branches:
+      - development
+      - main
+
   pull_request: 
     branches:    
       - development
        
 jobs:
-    welcome: # just an id for the job
-        name: Welcome
-        runs-on: ubuntu-20.04
-        steps:
-            - name: "Welcome step"
-              run: echo "Hello form first job :)"
-
     test:
-        name: Application tests
+        name: Running tests
         runs-on: ubuntu-20.04
+
         steps:
-          - name: Checkout
+          - name: checkout
             uses: actions/checkout@v2
-          - name: 'Create env file'
+
+          - name: create .env
             run: |
               touch .env
 
@@ -29,6 +29,8 @@ jobs:
               echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
               echo APP_HOST=${{ secrets.APP_HOST }} >> .env
               echo APP_PORT=${{ secrets.APP_PORT }} >> .env
+              echo CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }} >> .env
+              echo CELERY_RESULT_BACKEND=${{ secrets.CELERY_RESULT_BACKEND }} >> .env
               echo CLIENT_MAX_BODY=${{ secrets.CLIENT_MAX_BODY }} >> .env
               echo DB_HOST=${{ secrets.DB_HOST }} >> .env
               echo DB_PORT=${{ secrets.DB_PORT }} >> .env
@@ -45,17 +47,15 @@ jobs:
               echo SECURE_SSL_REDIRECT=${{ secrets.SECURE_SSL_REDIRECT }} >> .env
               
               cat .env
-          - name: Build
-            run: docker-compose -f dev.compose.yml up -d
-          - name: Tests
-            run: docker-compose -f dev.compose.yml run --rm app sh -c "python manage.py test"
 
-#     lint:
-#         name: Lint
-#         runs-on: ubuntu-20.04
-#         steps:
-#           - name: Checkout
-#             uses: actions/checkout@v2
-          
-#           - name: Lint
-#             run: docker-compose -f dev.compose.yml run --rm app sh -c "flake8"
+          - name: run project
+            run: |
+              docker-compose -f dev.compose.yml --profile testing up -d 
+
+          - name: run tests
+            run: |
+              docker-compose -f dev.compose.yml --profile testing run --rm app sh -c "python manage.py test"
+
+          - name: run flake8
+            run: |
+              docker-compose -f dev.compose.yml --profile testing run --rm app sh -c "flake8"
