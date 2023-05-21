@@ -10,8 +10,9 @@ from apps.orders.serializers import (
     UserOrderListSerializer,
 )
 from apps.orders.querysets import (
+    get_all_orders,
     get_all_user_orders,
-    get_user_registered_orders,
+    get_all_user_registered_orders,
 )
 from apps.orders.enums import OrderStatusEnum
 
@@ -19,7 +20,6 @@ from apps.orders.enums import OrderStatusEnum
 class OrderViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     mixins.RetrieveModelMixin,
     CoreViewSet
@@ -35,22 +35,24 @@ class OrderViewSet(
     }
 
     querysets = {
-        'destroy': get_user_registered_orders
+        'create': get_all_orders,
+        'list': get_all_user_orders,
+        'retrieve': get_all_user_orders,
+        'destroy': get_all_user_registered_orders,
     }
 
     def get_queryset(self, **kwargs):
-
         """
         base queryset for entire ViewSet
         It's changeable through querysets field from CoreViewSet
         """
 
-        return get_all_user_orders(
-            owner=self.request.user
-        )
+        return super().get_queryset(owner=self.request.user, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
-        self.queryset = get_user_registered_orders(owner=request.user.id)
+        # default self.get_queryset() applies this filter
+        # self.queryset = super().get_queryset(owner=request.user)
+
         order = self.get_object()
         order.status = OrderStatusEnum.CANCELED
         order.save()
