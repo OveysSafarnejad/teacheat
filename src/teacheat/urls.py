@@ -23,8 +23,10 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 from apps.user.urls import router as user_router
-from apps.tasties.urls import router as tastyfood_router
+from apps.tasties.urls import router as tasty_food_router
 from apps.chef.urls import router as chef_router
+from apps.general.urls import router as general_router
+from apps.orders.urls import router as orders_router
 
 
 schema_view = get_schema_view(
@@ -46,10 +48,11 @@ urlpatterns = [
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('api-auth/', include('rest_framework.urls')),
     path('auth/', include('apps.auth.urls'), name='authentication'),
-    path('auth/', include(user_router.urls)),
-    path('', include((tastyfood_router.urls, 'tasties'))),
+    path('', include((user_router.urls, 'accounts'))),
+    path('', include((tasty_food_router.urls, 'tasties'))),
     path('', include((chef_router.urls, 'chefs'))),
-
+    path('', include((general_router.urls, 'cities'))),
+    path('', include((orders_router.urls, 'orders'))),
 ]
 
 if settings.DEBUG:

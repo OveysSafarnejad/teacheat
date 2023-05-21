@@ -15,7 +15,7 @@ class AppConfigBase(AppConfig):
 
     # fully qualified module names to be imported after app loading.
     # dependencies will be handled by modules order as django itself.
-    # example: 'apps.status.manager'
+    # example: 'src.apps.status.manager'
     required_modules = []
 
     def _import_modules(self):
