@@ -78,7 +78,7 @@ class CoreViewSet(viewsets.GenericViewSet):
         it returns the default `queryset` if the method has no custom queryset.
         """
 
-        assert (self.queryset is not None or len(self.querysets) !=0), (
+        assert (self.queryset is not None or len(self.querysets) != 0), (
                 "'%s' should either include `queryset` or 'querysets' attribute, "
                 "or override the `get_queryset()` method."
                 % self.__class__.__name__

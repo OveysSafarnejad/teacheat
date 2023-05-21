@@ -1,7 +1,4 @@
-from django.db.models import Avg, Count, Value, functions, F
-
 from apps.orders.models import Order
-from apps.user.models import User
 from apps.orders.enums import OrderStatusEnum
 
 

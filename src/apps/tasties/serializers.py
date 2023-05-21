@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from apps.tasties.models import Rating, Tasty
-from apps.chef.serializers import ChefListSerializer
 
 
 class CreateTastyFoodItemSerializer(serializers.ModelSerializer):

@@ -12,7 +12,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 @admin.register(Address)
-class UserAdmin(ModelAdminBase):
+class AddressAdmin(ModelAdminBase):
     list_display = ('title', 'owner_id')
     list_display_links = ('title',)
     raw_id_fields = ('owner',)

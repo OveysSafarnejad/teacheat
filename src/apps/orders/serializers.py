@@ -32,7 +32,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     def validate_delivery(delivery_date: datetime) -> datetime:
         if delivery_date < timezone.now() + timedelta(days=1):
             raise ValidationError(
-                _(f'You can choose your delivery date from the next day.')
+                _('You can choose your delivery date from the next day.')
             )
         return delivery_date
 
