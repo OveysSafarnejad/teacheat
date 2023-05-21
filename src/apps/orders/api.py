@@ -10,8 +10,10 @@ from apps.orders.serializers import (
     UserOrderListSerializer,
 )
 from apps.orders.querysets import (
-    get_all_user_orders
+    get_all_user_orders,
+    get_user_registered_orders,
 )
+from apps.orders.enums import OrderStatusEnum
 
 
 class OrderViewSet(
@@ -29,6 +31,11 @@ class OrderViewSet(
     serializers = {
         'create': OrderCreateSerializer,
         'list': UserOrderListSerializer,
+        'retrieve': UserOrderListSerializer,
+    }
+
+    querysets = {
+        'destroy': get_user_registered_orders
     }
 
     def get_queryset(self, **kwargs):
@@ -42,4 +49,9 @@ class OrderViewSet(
             owner=self.request.user
         )
 
-
+    def destroy(self, request, *args, **kwargs):
+        self.queryset = get_user_registered_orders(owner=request.user.id)
+        order = self.get_object()
+        order.status = OrderStatusEnum.CANCELED
+        order.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
