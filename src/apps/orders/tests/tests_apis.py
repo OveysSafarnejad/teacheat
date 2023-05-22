@@ -13,7 +13,6 @@ from apps.orders.enums import OrderStatusEnum
 from apps.orders.models import Order
 
 
-
 class OrdersTest(BaseAPITestCase):
 
     def setUp(self) -> None:
