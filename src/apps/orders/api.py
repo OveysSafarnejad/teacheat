@@ -7,12 +7,14 @@ from apps.core.viewsets import CoreViewSet
 from apps.orders.models import Order
 from apps.orders.serializers import (
     OrderCreateSerializer,
-    UserOrderListSerializer,
+    OrderListSerializer,
 )
 from apps.orders.querysets import (
     get_all_orders,
     get_all_user_orders,
     get_all_user_registered_orders,
+
+    get_all_chef_orders,
 )
 from apps.orders.enums import OrderStatusEnum
 
@@ -30,8 +32,8 @@ class OrderViewSet(
 
     serializers = {
         'create': OrderCreateSerializer,
-        'list': UserOrderListSerializer,
-        'retrieve': UserOrderListSerializer,
+        'list': OrderListSerializer,
+        'retrieve': OrderListSerializer,
     }
 
     querysets = {
@@ -57,3 +59,25 @@ class OrderViewSet(
         order.status = OrderStatusEnum.CANCELED
         order.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ChefOrdersViewSet(
+    mixins.ListModelMixin,
+    CoreViewSet
+):
+    model = Order
+    permission_classes = (IsAuthenticated, )
+    serializers = {
+        'list': OrderListSerializer,
+    }
+
+    querysets = {
+        'list': get_all_chef_orders,
+    }
+
+    def get_queryset(self, **kwargs):
+
+        return super().get_queryset(
+            tasty__chef=self.request.user,
+            **kwargs
+        )

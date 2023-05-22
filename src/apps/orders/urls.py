@@ -1,6 +1,6 @@
 from rest_framework import routers
 
-from apps.orders.api import OrderViewSet
+from apps.orders.api import ChefOrdersViewSet, OrderViewSet
 
 
 app_name = 'orders'
@@ -15,5 +15,11 @@ router = routers.DefaultRouter()
 router.register(
     prefix='orders',
     viewset=OrderViewSet,
+    basename='order'
+)
+
+router.register(
+    prefix='chef-orders',
+    viewset=ChefOrdersViewSet,
     basename='order'
 )
