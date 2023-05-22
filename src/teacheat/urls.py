@@ -26,7 +26,7 @@ from apps.user.urls import router as user_router
 from apps.tasties.urls import router as tasty_food_router
 from apps.chef.urls import router as chef_router
 from apps.general.urls import router as general_router
-from apps.orders.urls import router as orders_router
+from apps.orders.urls import chef_orders_router, router as orders_router
 
 
 schema_view = get_schema_view(
@@ -53,6 +53,7 @@ urlpatterns = [
     path('', include((chef_router.urls, 'chefs'))),
     path('', include((general_router.urls, 'cities'))),
     path('', include((orders_router.urls, 'orders'))),
+    path('', include((chef_orders_router.urls, 'chef-orders'))),
 ]
 
 if settings.DEBUG:

@@ -6,6 +6,7 @@ from apps.orders.api import ChefOrdersViewSet, OrderViewSet
 app_name = 'orders'
 
 router = routers.DefaultRouter()
+chef_orders_router = routers.DefaultRouter()
 
 # prefix - The URL prefix to use for this set of routes.
 # basename - The basename argument is used to specify the initial part of the view name pattern.
@@ -18,8 +19,8 @@ router.register(
     basename='order'
 )
 
-router.register(
+chef_orders_router.register(
     prefix='chef-orders',
     viewset=ChefOrdersViewSet,
-    basename='order'
+    basename='chef-orders'
 )
