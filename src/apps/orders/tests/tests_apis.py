@@ -9,8 +9,9 @@ from model_bakery import baker
 from apps.core.tests import BaseAPITestCase
 from apps.tasties.models import Tasty
 from apps.user.models import Address, User
-from apps.orders.models import Order
 from apps.orders.enums import OrderStatusEnum
+from apps.orders.models import Order
+
 
 
 class OrdersTest(BaseAPITestCase):
