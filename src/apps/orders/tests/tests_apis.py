@@ -240,4 +240,3 @@ class ChefOrdersTest(BaseAPITestCase):
         order = Order.objects.get(id=str(self.order.id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(order.status, OrderStatusEnum.REJECTED)
-
