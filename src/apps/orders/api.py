@@ -15,6 +15,7 @@ from apps.orders.querysets import (
     get_all_user_registered_orders,
 
     get_all_chef_orders,
+    get_all_chef_registered_orders,
 )
 from apps.orders.enums import OrderStatusEnum
 
@@ -63,6 +64,7 @@ class OrderViewSet(
 
 class ChefOrdersViewSet(
     mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
     CoreViewSet
 ):
     model = Order
@@ -73,6 +75,7 @@ class ChefOrdersViewSet(
 
     querysets = {
         'list': get_all_chef_orders,
+        'destroy': get_all_chef_registered_orders,
     }
 
     def get_queryset(self, **kwargs):
@@ -81,3 +84,9 @@ class ChefOrdersViewSet(
             tasty__chef=self.request.user,
             **kwargs
         )
+
+    def destroy(self, request, *args, **kwargs):
+        order = self.get_object()
+        order.status = OrderStatusEnum.REJECTED
+        order.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

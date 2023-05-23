@@ -25,3 +25,9 @@ def get_all_chef_orders():
         'owner',
         'address',
     )
+
+
+def get_all_chef_registered_orders():
+    return get_all_orders().filter(
+        status=OrderStatusEnum.REGISTERED
+    )
