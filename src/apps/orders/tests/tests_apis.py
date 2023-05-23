@@ -176,16 +176,16 @@ class ChefOrdersTest(BaseAPITestCase):
         self.user = baker.make(User)
         self.address = baker.make(Address, owner=self.user)
 
-        order_data = {
+        self.order_data = {
             "tasty": self.tasty,
             "owner": self.user,
             "address": self.address,
             "delivery": timezone.now() + timedelta(days=2)
         }
-        self.order = baker.make(Order, **order_data)
+        self.order = baker.make(Order, **self.order_data)
 
-        order_data['tasty'] = self.other_tasty
-        self.other_order = baker.make(Order, **order_data)
+        self.order_data['tasty'] = self.other_tasty
+        self.other_order = baker.make(Order, **self.order_data)
 
         self.client.force_authenticate(user=self.chef)
 
@@ -212,4 +212,32 @@ class ChefOrdersTest(BaseAPITestCase):
             self.chef.id == int(fetched_order['tasty']['chef']),
             str(self.tasty.id) == fetched_order['tasty']['id']
         ])
+
+    def test_cancel_order_by_chef_invalid_status_404(self):
+        self.order.status = OrderStatusEnum.REJECTED
+        self.order.save()
+
+        url = reverse('chef-orders:chef-orders-detail', kwargs={
+            'pk': str(self.order.id)
+        })
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_cancel_order_by_chef_invalid_owner_404(self):
+        url = reverse('chef-orders:chef-orders-detail', kwargs={
+            'pk': str(self.other_order.id)
+        })
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_cancel_order_successful_204(self):
+        url = reverse('chef-orders:chef-orders-detail', kwargs={
+            'pk': str(self.order.id)
+        })
+        response = self.client.delete(url)
+        order = Order.objects.get(id=str(self.order.id))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(order.status, OrderStatusEnum.REJECTED)
 
