@@ -1,5 +1,6 @@
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 from rest_framework.viewsets import mixins
 from rest_framework.response import Response
 
@@ -15,7 +16,7 @@ from apps.orders.querysets import (
     get_all_user_registered_orders,
 
     get_all_chef_orders,
-    get_all_chef_registered_orders,
+    get_all_chef_valid_orders,
 )
 from apps.orders.enums import OrderStatusEnum
 
@@ -65,6 +66,7 @@ class OrderViewSet(
 class ChefOrdersViewSet(
     mixins.ListModelMixin,
     mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
     CoreViewSet
 ):
     model = Order
@@ -75,7 +77,8 @@ class ChefOrdersViewSet(
 
     querysets = {
         'list': get_all_chef_orders,
-        'destroy': get_all_chef_registered_orders,
+        'destroy': get_all_chef_valid_orders,
+        'partial_update': get_all_chef_valid_orders,
     }
 
     def get_queryset(self, **kwargs):
@@ -85,7 +88,14 @@ class ChefOrdersViewSet(
             **kwargs
         )
 
+    def partial_update(self, request, *args, **kwargs):
+        order = self.get_object()
+        order.status = OrderStatusEnum.ACCEPTED
+        order.save()
+        return Response(status=status.HTTP_200_OK)
+
     def destroy(self, request, *args, **kwargs):
+        # TODO: adding auto-cancel order 24 hour before its delivery
         order = self.get_object()
         order.status = OrderStatusEnum.REJECTED
         order.save()

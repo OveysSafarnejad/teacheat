@@ -1,3 +1,4 @@
+from django.utils import timezone
 from apps.orders.models import Order
 from apps.orders.enums import OrderStatusEnum
 
@@ -27,7 +28,8 @@ def get_all_chef_orders():
     )
 
 
-def get_all_chef_registered_orders():
+def get_all_chef_valid_orders():
     return get_all_orders().filter(
+        delivery__gt=timezone.now() + timezone.timedelta(days=1),
         status=OrderStatusEnum.REGISTERED
     )
