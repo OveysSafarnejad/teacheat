@@ -9,8 +9,8 @@ from model_bakery import baker
 from apps.core.tests import BaseAPITestCase
 from apps.tasties.models import Tasty
 from apps.user.models import Address, User
-from apps.orders.models import Order
 from apps.orders.enums import OrderStatusEnum
+from apps.orders.models import Order
 
 
 class OrdersTest(BaseAPITestCase):
@@ -162,3 +162,81 @@ class OrdersTest(BaseAPITestCase):
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class ChefOrdersTest(BaseAPITestCase):
+
+    def setUp(self) -> None:
+        self.chef = baker.make(User)
+        self.tasty = baker.make(Tasty, chef=self.chef)
+
+        self.other_chef = baker.make(User)
+        self.other_tasty = baker.make(Tasty, chef=self.other_chef)
+
+        self.user = baker.make(User)
+        self.address = baker.make(Address, owner=self.user)
+
+        self.order_data = {
+            "tasty": self.tasty,
+            "owner": self.user,
+            "address": self.address,
+            "delivery": timezone.now() + timedelta(days=2)
+        }
+        self.order = baker.make(Order, **self.order_data)
+
+        self.order_data['tasty'] = self.other_tasty
+        self.other_order = baker.make(Order, **self.order_data)
+
+        self.client.force_authenticate(user=self.chef)
+
+    def test_unauthenticated_chef_orders_list_error_401(self):
+        self.client.logout()
+        url = reverse('chef-orders:chef-orders-list')
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test__chef_orders_list_successful_200(self):
+        url = reverse('chef-orders:chef-orders-list')
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = json.loads(response.content)
+
+        self.assertEqual(len(response), 1)
+        fetched_order = response[0]
+        assert all([
+            self.user.id == int(fetched_order['owner']['id']),
+            self.chef.id == int(fetched_order['tasty']['chef']),
+            str(self.tasty.id) == fetched_order['tasty']['id']
+        ])
+
+    def test_cancel_order_by_chef_invalid_status_404(self):
+        self.order.status = OrderStatusEnum.REJECTED
+        self.order.save()
+
+        url = reverse('chef-orders:chef-orders-detail', kwargs={
+            'pk': str(self.order.id)
+        })
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_cancel_order_by_chef_invalid_owner_404(self):
+        url = reverse('chef-orders:chef-orders-detail', kwargs={
+            'pk': str(self.other_order.id)
+        })
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_cancel_order_successful_204(self):
+        url = reverse('chef-orders:chef-orders-detail', kwargs={
+            'pk': str(self.order.id)
+        })
+        response = self.client.delete(url)
+        order = Order.objects.get(id=str(self.order.id))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(order.status, OrderStatusEnum.REJECTED)

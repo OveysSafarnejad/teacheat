@@ -44,7 +44,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         return address
 
 
-class UserOrderListSerializer(serializers.ModelSerializer):
+class OrderListSerializer(serializers.ModelSerializer):
 
     owner = UserBriefSerializer()
     address = UserAddressesSerializer()
