@@ -50,9 +50,15 @@ class Order(BaseModel):
              using=None, update_fields=None):
 
         if self.reference in (None, ''):
-            self.reference = generate_slug(self.__class__, search_field='reference', length=12)
+            self.reference = generate_slug(
+                self.__class__,
+                search_field='reference',
+                length=12
+            )
 
-        if self.delivery < timezone.now() + timezone.timedelta(days=1):
-            raise ValidationError(_('Delivery is available for the day after ordering.'))
+        # if self.delivery < timezone.now() + timezone.timedelta(days=1):
+        #     raise ValidationError(
+        #         _('Delivery is available for the day after ordering.')
+        #     )
 
         super(Order, self).save()

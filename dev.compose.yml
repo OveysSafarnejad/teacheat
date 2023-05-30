@@ -87,6 +87,24 @@ services:
     env_file:
       - .env
 
+  celery_beat:
+    container_name: teacheat-celery-beat
+    profiles:
+      - production
+    build: .
+    command: celery -A teacheat.celery.celery beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - ./src:/app/src
+    environment:
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    depends_on:
+      - app
+      - redis
+      - celery_worker
+    env_file:
+      - .env
+
   flower:
     container_name: teacheat-flower
     profiles:

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
+    'django_celery_beat',
 
     # project apps
     'apps.utils.apps.UtilsConfig',
@@ -143,8 +144,11 @@ if not DEBUG:
     STATIC_ROOT = '/app/vol/web/static'
     MEDIA_ROOT = '/app/vol/web/media'
 else:
-    STATIC_ROOT = os.path.join(BASE_DIR.parent.parent, os.environ.get('STATIC_ROOT'))
-    MEDIA_ROOT = os.path.join(BASE_DIR.parent.parent, os.environ.get('MEDIA_ROOT'))
+    STATIC_ROOT = '/app/vol/web/static'
+    MEDIA_ROOT = '/app/vol/web/media'
+
+    # STATIC_ROOT = os.path.join(BASE_DIR.parent.parent, os.environ.get('STATIC_ROOT'))
+    # MEDIA_ROOT = os.path.join(BASE_DIR.parent.parent, os.environ.get('MEDIA_ROOT'))
 
 
 # Default primary key field type
