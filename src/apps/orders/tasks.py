@@ -4,6 +4,7 @@ from teacheat.celery import celery
 from apps.orders.models import Order
 from apps.orders.enums import OrderStatusEnum
 
+
 @celery.task()
 def cancel_unaccepted_orders():
     """
@@ -27,4 +28,3 @@ def cancel_unaccepted_orders():
         time=timezone.now().strftime("%m/%d/%Y, %H:%M:%S"),
         number_of_unaccepted=len(unaccepted_orders)
     )
-
