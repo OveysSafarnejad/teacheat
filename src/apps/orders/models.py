@@ -1,6 +1,6 @@
-from django.core.exceptions import ValidationError
-from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+# from django.core.exceptions import ValidationError
+# from django.utils import timezone
+# from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.core.models import BaseModel
@@ -50,9 +50,15 @@ class Order(BaseModel):
              using=None, update_fields=None):
 
         if self.reference in (None, ''):
-            self.reference = generate_slug(self.__class__, search_field='reference', length=12)
+            self.reference = generate_slug(
+                self.__class__,
+                search_field='reference',
+                length=12
+            )
 
-        if self.delivery < timezone.now() + timezone.timedelta(days=1):
-            raise ValidationError(_('Delivery is available for the day after ordering.'))
+        # if self.delivery < timezone.now() + timezone.timedelta(days=1):
+        #     raise ValidationError(
+        #         _('Delivery is available for the day after ordering.')
+        #     )
 
         super(Order, self).save()

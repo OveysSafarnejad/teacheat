@@ -7,3 +7,4 @@ class OrderStatusEnum(EnumBase):
     REJECTED = EnumMember(1, _('Rejected'))
     CANCELED = EnumMember(2, _('Canceled'))
     ACCEPTED = EnumMember(3, _('Accepted'))
+    NOT_ACCEPTED = EnumMember(4, _('Not Accepted'))
