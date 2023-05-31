@@ -1,11 +1,25 @@
-FROM python:3.10-alpine3.13
+FROM python:3.10-alpine as builder
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /app/src
+
+COPY requirements.txt /app/requirements.txt
+
+RUN apk add --update --no-cache --virtual .tmp-deps \
+    build-base linux-headers && \
+    pip wheel --no-cache-dir --no-deps --wheel-dir /app/python-deps/wheels -r /app/requirements.txt && \
+    apk del .tmp-deps
 
 
-LABEL maintainer="safarnejad@outlook.com"
+FROM python:3.10-alpine3.18 as runner
+
+LABEL MAINTAINER="Hso | safarnejad@outlook.com"
 ENV PYTHONUNBUFFERD 1
 
 
-COPY requirements.txt /app/requirements.txt
+#COPY requirements.txt /app/requirements.txt
 COPY .env /app/.env
 COPY src /app/src
 COPY scripts /app/scripts
@@ -13,39 +27,26 @@ COPY setup.cfg /app/setup.cfg
 
 WORKDIR /app/src
 
-RUN python3 -m venv /app/.venv && \
-    # packages for psycopg2 in alpine version of base image
-    apk add --update --no-cache postgresql-client && \
-    # unneccessary packages can be removed after installing requirements using --virtual .tmp-deps 
-    apk add --update --no-cache --virtual .tmp-deps \
-    build-base postgresql-dev musl-dev linux-headers && \
-    /app/.venv/bin/pip install --upgrade pip && \
-    /app/.venv/bin/pip install -r /app/requirements.txt && \
-    # removing unneccessary packages
-    apk del .tmp-deps && \
-    # creating non-root user for limitted permissions
-#    addgroup -S appgroup && \
-#    adduser -S appuser -G appgroup --disabled-password --no-create-home appuser && \
-#    # creating static and media dirs and giving access for R/W to the appuser
-#    mkdir -p /app/vol/web/static && \
-#    mkdir -p /app/vol/web/media && \
-#    # chgrp -R appgroup /app/vol/ && \
-#    # chown -R :appgroup /app/vol/ && \
-#    chown -R appuser:appgroup /app/vol/ && \
-#    chmod -R 755 /app/vol/ && \
-#    chmod -R +x /app/scripts/
+RUN apk update && apk add libc-dev gcc && \
+    python3 -m venv /app/.venv
+
+COPY --from=builder /app/python-deps/wheels /wheels
+COPY --from=builder /app/requirements.txt .
+
+RUN /app/.venv/bin/pip install --no-cache /wheels/* && \
+    # creating non-root user for limited permissions
     adduser --disabled-password --no-create-home appuser && \
     # creating static and media dirs and giving access for R/W to the appuser
     mkdir -p /app/vol/web/static && \
     mkdir -p /app/vol/web/media && \
-    chown -R appuser:appuser /app/vol && \
+    chown -R appuser: /app/vol && \
     chmod -R 755 /app/vol && \
     chmod -R +x /app/scripts
 
 # adding python environment from /.venv to the path
-# now-on any python command will use /.venv python interpreter 
+# now-on any python command will use /.venv python interpreter
 ENV PATH="/app/scripts:/app/.venv/bin:$PATH"
-# switching root user to appuser 
+# switching root user to appuser
 # the appuser does not have full access
 USER appuser
 
