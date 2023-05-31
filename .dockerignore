@@ -1,4 +1,5 @@
 *.pyc
+*.DS_Store
 *.pyo
 *.mo
 *.db
@@ -23,8 +24,11 @@ src/{{ project_name }}/settings/local.py
 src/node_modules
 web/media
 web/static/CACHE
+src/htmlcov
+src/.coverage
 stats
 Dockerfile
 data/*
 .vscode/
+__pycache__/
 
