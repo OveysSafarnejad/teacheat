@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app/src
 
-COPY requirements.txt /app/requirements.txt
+COPY ./requirements/requirements.txt /app/requirements.txt
 
 RUN apk add --update --no-cache --virtual .tmp-deps \
     build-base linux-headers && \
