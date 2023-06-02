@@ -1,6 +1,6 @@
 # Helpful commands for beginners :)
 
-## 1. generating requirements.in:
+## 1. generating requirements.txt from requirements.in:
 
 #### install pip-tools
 
@@ -24,4 +24,22 @@ pip-compile requirements/requirements.in -o requirements/requirements.txt
     coverage run manage.py test
     coverage report
     coverage html
+```
+
+
+# Deploy with k8s
+
+### postgres using helm
+
+1. create postgres-pv and postgres-pvc, then:
+
+```commandline
+kubectl apply -f deploy/postgres-pvc.yml
+```
+
+2. create postgresql-values.yml from sample.postgresql-values.yml, then run:
+```commandline
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm install teacheat-postgres -f deploy/postgresql-values.yml bitnami/postgresql
 ```
