@@ -27,7 +27,7 @@ pip-compile requirements/requirements.in -o requirements/requirements.txt
 ```
 
 
-# Deploy with k8s
+# Deploy with k8s on minikube
 
 ### postgres using helm
 
@@ -42,4 +42,35 @@ kubectl apply -f deploy/postgres-pvc.yml
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 helm install teacheat-postgres -f deploy/postgresql-values.yml bitnami/postgresql
+```
+
+### Django app and Reverse proxy
+
+0. Start minikube cluster
+```commandline
+minikube start --driver=docker
+```
+
+1. create app-configmap.yml from sample.app-configmap.yml, and:
+```commandline
+kubectl apply -f deploy/app-configmap.yml
+```
+
+2. create app-secrets.yml from sample.app-secrets.yml, and:
+```commandline
+kubectl apply -f deploy/app-secrets.yml
+```
+
+3. deploy teacheat deployment using:
+```commandline
+kubectl apply -f deploy/teacheat.yml
+```
+
+prerequisites:
+```commandline
+docker build teacheat-app:latest .
+docker build teacheat-proxy:latest proxy/
+
+minikube image load teacheat-app:latest
+minikube image load teacheat-proxy:latest
 ```

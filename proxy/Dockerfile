@@ -7,14 +7,14 @@ COPY ./run.sh /run.sh
 
 USER root
 
-RUN mkdir -p /home/app/static && \
-    chmod -R 755 /home/app/static && \
+RUN mkdir -p /app/vol/web && \
+    chmod -R 755 /app/vol/web && \
     chown nginx:nginx /etc/nginx/conf.d/default.conf && \
     chmod +x /run.sh
 
 
 # optional : useful when we want to deploy app on other service
-VOLUME /home/app/static
+VOLUME /app/vol/web
 
 
 USER nginx
