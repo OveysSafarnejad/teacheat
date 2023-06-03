@@ -51,7 +51,7 @@ services:
     ports:
         - ${LISTEN_PORT}:${LISTEN_PORT}
     volumes:
-        - static_data:/home/app/static
+        - static_data:/app/vol/web
     env_file:
         - .env
 
