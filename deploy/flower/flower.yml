@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: teacheat-flower-service
+
+spec:
+  selector:
+    pod: teacheat-flower
+  ports:
+  - port: 5555
+  type: NodePort
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: teacheat-flower
+  labels:
+    deployment: teacheat-flower
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod: teacheat-flower
+  template:
+    metadata:
+      labels:
+        pod: teacheat-flower
+    spec:
+      containers:
+      - name: teacheat-flower
+        image: teacheat-app:latest
+        imagePullPolicy: Never
+        command: ['celery', '-A', 'teacheat.celery.celery' , 'flower']
+        ports:
+          - containerPort: 5555
+            name: flower
+        env:
+          - name: CELERY_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: celery_broker_url
+
+          - name: CELERY_RESULT_BACKEND
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: celery_result_backend
+
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: secret_key
+
+        resources:
+          limits:
+            cpu: 100m
