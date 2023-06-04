@@ -51,17 +51,17 @@ helm install teacheat-postgres -f deploy/postgresql-values.yml bitnami/postgresq
 minikube start --driver=docker
 ```
 
-1. create app-configmap.yml from sample.app-configmap.yml, and:
+1. Create app-configmap.yml from sample.app-configmap.yml, and:
 ```commandline
 kubectl apply -f deploy/app-configmap.yml
 ```
 
-2. create app-secrets.yml from sample.app-secrets.yml, and:
+2. Create app-secrets.yml from sample.app-secrets.yml, and:
 ```commandline
 kubectl apply -f deploy/app-secrets.yml
 ```
 
-3. deploy teacheat deployment using:
+3. Deploy teacheat deployment using:
 ```commandline
 kubectl apply -f deploy/teacheat.yml
 ```
@@ -73,4 +73,12 @@ docker build teacheat-proxy:latest proxy/
 
 minikube image load teacheat-app:latest
 minikube image load teacheat-proxy:latest
+```
+
+4. Deploy redis, celery worker, celery beat and flower:
+```commandline
+kubectl apply -f deploy/redis/redis.yml
+kubectl apply -f deploy/celery/worker.yml
+kubectl apply -f deploy/celery/beat.yml
+kubectl apply -f deploy/flower/flower.yml
 ```
