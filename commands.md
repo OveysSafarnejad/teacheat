@@ -130,9 +130,6 @@ kubectl create clusterrolebinding serviceaccounts-cluster-admin --clusterrole=cl
 ### Create dashboard token
 ```commandline
 kubectl create token admin-user --duration 12h -n kubernetes-dashboard
-
-eyJhbGciOiJSUzI1NiIsImtpZCI6ImVlMTVlMDYxOWM1YTM2NTRlMWNjNTRkNDZmYzEyODY1MzY3ZWI5ZDUifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjIl0sImV4cCI6MTY4NjEwNzc3NiwiaWF0IjoxNjg2MDY0NTc2LCJpc3MiOiJodHRwczovL29pZGMuZWtzLmV1LWNlbnRyYWwtMS5hbWF6b25hd3MuY29tL2lkLzk2NjJGMDRBNTIzRkMzNjA0MUMxM0VCOEI0Mzg3MzMzIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJhZG1pbi11c2VyIiwidWlkIjoiN2RlM2RhMGEtYzI2OC00YTk5LWEyNWUtOWFmYjNhYzZiODRmIn19LCJuYmYiOjE2ODYwNjQ1NzYsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlcm5ldGVzLWRhc2hib2FyZDphZG1pbi11c2VyIn0.q9eGFvITAqRxmtTct8hgaHsE3UCGfR2cqcQB-2B0mnazr3pNlZvetdDycQxVsgp-pwJLj5-oUZsRfx2o5ryXCz9N5mJ4tbp6oxFHsKXx-7jEPMDGbJ5QRsPSSI1wZzFfBJoUYoMNr7qN0A4_zORStIQr3gudV3mzgnWN8HTsqYQ29KqNCZPM2En7cZ-CUHgCeYuOg6o-tzw-22zpY14X8YMaOFGGIC9SknGmxipT_ch-embzFQKgpiA6IOcme1xWYOCkMliAmoa-0vTSx6-u_lRsLdV8xZeCMdOIKgTzQeoIvBGueZcz1LkS0ui2vi3LYhXVvV0LxaDLABVwjjWlnA
-
 ```
 
 ### Create a proxy for dashboard using:
@@ -143,4 +140,35 @@ kubectl proxy
 and dashboard will be available at:
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/workloads?namespace=default
 
-### 
+### Add efs csi driver into the cluster 
+```commandline
+helm repo add aws-efs-csi-driver https://kubernetes-sigs.github.io/aws-efs-csi-driver/
+helm repo update
+
+
+terraform output -raw efs_csi_sa_role
+
+helm upgrade -i aws-efs-csi-driver aws-efs-csi-driver/aws-efs-csi-driver \
+    --namespace kube-system \
+    --set image.repository=602401143452.dkr.ecr.eu-central-1.amazonaws.com/eks/aws-efs-csi-driver \
+    --set controller.serviceAccount.create=true \
+    --set controller.serviceAccount.name=efs-csi-controller-sa\
+    --set "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"=arn:aws:iam::662355493241:role/teacheat-efs-csi20230606154226219900000001
+```
+
+
+### Authenticate with ecr from within your computer:
+```commandline
+aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 662355493241.dkr.ecr.eu-central-1.amazonaws.com
+```
+
+
+
+### Build fresh images and push them to ecr
+```commandline
+docker build -t 662355493241.dkr.ecr.eu-central-1.amazonaws.com/teacheat-app:latest --platform linux/amd64 --compress .
+docker build -t 662355493241.dkr.ecr.eu-central-1.amazonaws.com/teacheat-proxy:latest --platform linux/amd64 --compress proxy/
+docker push 662355493241.dkr.ecr.eu-central-1.amazonaws.com/teacheat-app:latest
+docker push 662355493241.dkr.ecr.eu-central-1.amazonaws.com/teacheat-proxy:latest
+
+```
