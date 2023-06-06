@@ -22,3 +22,7 @@ variable "postgres_password" {
 variable "postgres_port" {
   default = "5450"
 }
+
+variable "kubernetes_cluster_admin_ip" {
+  default = "95.91.246.168/32"
+}
