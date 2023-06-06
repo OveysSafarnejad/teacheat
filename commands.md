@@ -82,3 +82,18 @@ kubectl apply -f deploy/celery/worker.yml
 kubectl apply -f deploy/celery/beat.yml
 kubectl apply -f deploy/flower/flower.yml
 ```
+
+# Create infrastructure using terraform
+
+### terraform install on osx
+```commandline
+brew tap hashicorp/tap
+brew install hashicorp/tap/terraform
+```
+
+### Configure aws IAM credential to be accessible from cli
+```commandline
+aws configure
+```
+
+###
