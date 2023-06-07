@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: app-configmap
+#  namespace: database
+
+data:
+  debug: "0 | 1"
+  secure_ssl_redirect: "0 | 1"
+  secure_browser_xss_filter: "0 | 1"
+  secure_content_type_nosniff: "0 | 1"
+  sql_debug: "0 | 1"
+  client_max_body: "integer"
+  allowed_hosts: "reverse proxy(nginx)'s host"
