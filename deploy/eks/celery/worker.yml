@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: teacheat-celery-worker
+  labels:
+    deployment: teacheat-celery-worker
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod: teacheat-celery-worker
+  template:
+    metadata:
+      labels:
+        pod: teacheat-celery-worker
+    spec:
+      containers:
+        - name: teacheat-celery-worker
+          image: teacheat-app:latest
+          imagePullPolicy: Never
+          command: ['celery', '-A', 'teacheat.celery.celery', 'worker', '-l', 'info']
+
+          env:
+            - name: CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: celery_broker_url
+
+            - name: CELERY_RESULT_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: celery_result_backend
+
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: secret_key
+
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: postgres_db
+
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: postgres_user
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: postgres_password
+
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: db_host
+
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: db_port

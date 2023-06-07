@@ -18,7 +18,7 @@ module "db" {
   create_random_password = false
   multi_az               = false
   db_subnet_group_name   = module.vpc.database_subnet_group
-  vpc_security_group_ids = []
+  vpc_security_group_ids = [module.rds_security_group.security_group_id]
 }
 
 module "rds_security_group" {
