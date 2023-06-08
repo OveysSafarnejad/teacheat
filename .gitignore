@@ -1,4 +1,6 @@
 .idea
+/deploy/eks/app-configmap.yml
+/deploy/eks/app-secrets.yml
 /deploy/app-configmap.yml
 /deploy/app-secrets.yml
 /deploy/postgresql-values.yml
@@ -177,6 +179,7 @@ cython_debug/
 
 # terraform gitignore
 # Local .terraform directories
+.terraform.lock.hcl
 **/.terraform/*
 
 # .tfstate files

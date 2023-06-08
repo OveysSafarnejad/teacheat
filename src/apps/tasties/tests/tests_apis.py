@@ -1,7 +1,11 @@
-import tempfile
+# import os.path
+# import tempfile
+# from django.core.files.base import ContentFile
+# from django.test.client import MULTIPART_CONTENT, encode_multipart, BOUNDARY
 from django.urls import reverse
+
 from rest_framework import status
-from PIL import Image
+# from PIL import Image
 from apps.core.tests import BaseAPITestCase
 from apps.user.models import User
 from apps.general.models import FoodCategory
@@ -33,20 +37,29 @@ class TastyFoodsTestApi(BaseAPITestCase):
         url = reverse('tasties:tasty-list')
         self.client.force_authenticate(user=self.user)
 
-        image = Image.new('RGB', (100, 100))
-        tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
-        image.save(tmp_file)
-        tmp_file.seek(0)
-        tasty = {
-            "title": "test-tasty",
-            "img": tmp_file,
-            "recipe": "cook it :)",
-            "duration": 20,
-            "tags": ['tag1', 'tag2'],
-            "category": self.category.id
-        }
+        # image = Image.new('RGB', (100, 100))
+        # tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
+        # image.save(tmp_file)
+        # tmp_file.seek(0)
 
-        response = self.client.post(url, data=tasty, format="multipart")
+        tasty = dict(
+            ingredients=[
+                dict(name="salt", volume=1, unit=0),
+                dict(name="tomato", volume=2, unit=1)
+            ],
+            title="test-tasty",
+            # img=tmp_file,
+            recipe="cook it :)",
+            duration=20,
+            tags=['tag1', 'tag2'],
+            category=self.category.id
+        )
+
+        response = self.client.post(
+            url,
+            data=tasty,
+            format='json'
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     # TODO: tasties filters should be tested
