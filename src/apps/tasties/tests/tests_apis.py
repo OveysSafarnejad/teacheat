@@ -1,21 +1,27 @@
-import tempfile
+# import os.path
+# import tempfile
+# from django.core.files.base import ContentFile
+# from django.test.client import MULTIPART_CONTENT, encode_multipart, BOUNDARY
+import json
+
 from django.urls import reverse
+from model_bakery import baker
 from rest_framework import status
-from PIL import Image
+# from PIL import Image
 from apps.core.tests import BaseAPITestCase
 from apps.user.models import User
 from apps.general.models import FoodCategory
+from apps.tasties.models import Tasty
 
 
 class TastyFoodsTestApi(BaseAPITestCase):
 
     def setUp(self) -> None:
-        user_data = {
-            "email": "safarnejad@fakemail.com",
-            "password": "supersecret",
-        }
-        self.user = User.objects.create_user(**user_data)
-        self.category = FoodCategory.objects.create(name='test-category')
+        self.other_chef = baker.make(User)
+        self.category = baker.make(FoodCategory)
+        self.other_chef_tasty = baker.make(Tasty, chef=self.other_chef)
+        self.chef = baker.make(User)
+
         super().setUp()
 
     def test_create_tasty_unauthorized_401(self):
@@ -25,28 +31,117 @@ class TastyFoodsTestApi(BaseAPITestCase):
 
     def test_create_tasty_invalid_data_400(self):
         url = reverse('tasties:tasty-list')
-        self.client.force_authenticate(user=self.user)
+        self.client.force_authenticate(user=self.chef)
         response = self.client.post(url, data={}, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_tasty_201(self):
         url = reverse('tasties:tasty-list')
-        self.client.force_authenticate(user=self.user)
+        self.client.force_authenticate(user=self.chef)
 
-        image = Image.new('RGB', (100, 100))
-        tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
-        image.save(tmp_file)
-        tmp_file.seek(0)
-        tasty = {
-            "title": "test-tasty",
-            "img": tmp_file,
-            "recipe": "cook it :)",
+        # image = Image.new('RGB', (100, 100))
+        # tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
+        # image.save(tmp_file)
+        # tmp_file.seek(0)
+
+        tasty = dict(
+            ingredients=[
+                dict(name="salt", volume=1, unit=0),
+                dict(name="tomato", volume=2, unit=1)
+            ],
+            title="test-tasty",
+            # img=tmp_file,
+            recipe="cook it :)",
+            duration=20,
+            tags=['tag1', 'tag2'],
+            category=self.category.id
+        )
+
+        response = self.client.post(
+            url,
+            data=tasty,
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_unauthenticated_request_update_tasty_401(self):
+        url = reverse('tasties:tasty-detail', kwargs={
+            'pk': str(self.other_chef_tasty.id)
+        })
+        response = self.client.put(
+            url,
+            data={},
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_invalid_tasty_update_by_chef_404(self):
+        url = reverse('tasties:tasty-detail', kwargs={
+            'pk': str(self.other_chef_tasty.id)
+        })
+
+        put_data = {
+            "title": "Macaroni",
+            "recipe": "Mix mac with tomato sause and meet.",
             "duration": 20,
-            "tags": ['tag1', 'tag2'],
-            "category": self.category.id
+            "tags": [
+                "Fastfood", "Italian"
+            ],
+            "category": self.category.id,
+            "ingredients": [
+                {
+                    "name": "tomato",
+                    "volume": 2,
+                    "unit": 1
+                }
+            ]
         }
 
-        response = self.client.post(url, data=tasty, format="multipart")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.client.force_authenticate(user=self.chef)
+        response = self.client.put(
+            url,
+            data=put_data,
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_tasty_by_chef_200(self):
+        url = reverse('tasties:tasty-detail', kwargs={
+            'pk': str(self.other_chef_tasty.id)
+        })
+
+        put_data = {
+            "title": "Macaroni",
+            "recipe": "Mix mac with tomato sause and meet.",
+            "duration": 20,
+            "tags": [
+                "Fastfood", "Italian"
+            ],
+            "category": self.category.id,
+            "ingredients": [
+                {
+                    "name": "tomato",
+                    "volume": 2,
+                    "unit": 1
+                }
+            ]
+        }
+
+        self.client.force_authenticate(user=self.other_chef)
+        response = self.client.put(
+            url,
+            data=put_data,
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = json.loads(response.content)
+        self.assertEqual(response['title'], put_data['title'])
+        self.assertEqual(
+            len(response['ingredients']),
+            len(put_data['ingredients'])
+        )
 
     # TODO: tasties filters should be tested

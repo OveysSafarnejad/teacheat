@@ -8,11 +8,13 @@ from drf_yasg.utils import swagger_auto_schema
 from apps.core.viewsets import CoreViewSet
 from apps.tasties.filters import TastyFilter
 from apps.tasties.serializers import (
-    CreateTastyFoodItemSerializer,
+    TastyFoodInputSerializer,
     ListTastyItemSerializer,
     CreateRatingSerializer,
 )
-from apps.tasties.querysets import get_all_tasties
+from apps.tasties.querysets import (
+    get_all_tasties,
+)
 from apps.tasties.models import Tasty
 from apps.tasties import services as tasty_service
 
@@ -20,6 +22,8 @@ from apps.tasties import services as tasty_service
 class TastyFoodViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.RetrieveModelMixin,
     CoreViewSet
 ):
     model = Tasty
@@ -29,7 +33,9 @@ class TastyFoodViewSet(
     filterset_class = TastyFilter
 
     serializers = {
-        'create': CreateTastyFoodItemSerializer,
+        'create': TastyFoodInputSerializer,
+        'retrieve': TastyFoodInputSerializer,
+        'update': TastyFoodInputSerializer,
         'list': ListTastyItemSerializer,
         'rate': CreateRatingSerializer,
     }
@@ -37,13 +43,20 @@ class TastyFoodViewSet(
     permissions = {
         'create': IsAuthenticated,
         'list': None,
+        'update': IsAuthenticated,
         'like': IsAuthenticated,
         'rate': IsAuthenticated,
     }
 
     querysets = {
-        'list': get_all_tasties
+        'list': get_all_tasties,
+        'update': get_all_tasties,
     }
+
+    def update(self, request, *args, **kwargs):
+        chef = self.request.user
+        self.queryset = self.get_queryset(chef_id=chef.id)
+        return super(TastyFoodViewSet, self).update(request, *args, **kwargs)
 
     @swagger_auto_schema(
         query_serializer=None,
