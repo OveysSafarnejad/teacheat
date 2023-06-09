@@ -111,9 +111,10 @@ class CoreViewSet(viewsets.GenericViewSet):
         queryset lookups.  Eg if objects are referenced using multiple
         keyword arguments in the url conf.
         """
-
-        queryset = self.filter_queryset(self.queryset or self.get_queryset())
-
+        if self.queryset is not None:
+            queryset = self.filter_queryset(self.queryset)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
         # Perform the lookup filtering.
         lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
 
