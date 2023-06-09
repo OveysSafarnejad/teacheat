@@ -16,7 +16,7 @@ class IngredientSerializer(serializers.ModelSerializer):
         return repr_data
 
 
-class CreateTastyFoodItemSerializer(serializers.ModelSerializer):
+class TastyFoodInputSerializer(serializers.ModelSerializer):
     ingredients = IngredientSerializer(
         many=True,
         allow_empty=False,
@@ -44,6 +44,19 @@ class CreateTastyFoodItemSerializer(serializers.ModelSerializer):
             Ingredient.objects.create(tasty=tasty, **ingredient)
 
         return tasty
+
+    def update(self, instance, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        instance = super(TastyFoodInputSerializer, self).update(
+            instance,
+            validated_data
+        )
+
+        instance.ingredients.all().delete()
+        for ingredient in ingredients:
+            Ingredient.objects.create(tasty=instance, **ingredient)
+
+        return instance
 
     def to_representation(self, instance):
         repr_data = super().to_representation(instance)

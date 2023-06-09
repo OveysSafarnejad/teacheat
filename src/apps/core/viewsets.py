@@ -71,7 +71,7 @@ class CoreViewSet(viewsets.GenericViewSet):
 
         return self._paginator
 
-    def get_queryset(self, **kwargs):
+    def get_queryset(self, **filters):
         """
         gets the related queryset to the current method.
 
@@ -87,19 +87,19 @@ class CoreViewSet(viewsets.GenericViewSet):
         queryset = self.querysets.get(self.action, self.queryset)
 
         if isinstance(queryset, QuerySet):
-            return queryset.filter(**kwargs).all()
+            return queryset.filter(**filters).all()
 
         if callable(queryset):
             queryset = queryset()
             if isinstance(queryset, QuerySet):
-                return queryset.filter(**kwargs).all()
+                return queryset.filter(**filters).all()
 
         if isinstance(queryset, dict):
             queryset = queryset.get(self.request.method.lower(), self.queryset)
             if callable(queryset):
                 queryset = queryset()
                 if isinstance(queryset, QuerySet):
-                    return queryset.filter(**kwargs).all()
+                    return queryset.filter(**filters).all()
 
         return queryset
 
