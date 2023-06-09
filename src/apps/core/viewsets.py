@@ -71,7 +71,7 @@ class CoreViewSet(viewsets.GenericViewSet):
 
         return self._paginator
 
-    def get_queryset(self, **kwargs):
+    def get_queryset(self, **filters):
         """
         gets the related queryset to the current method.
 
@@ -87,19 +87,19 @@ class CoreViewSet(viewsets.GenericViewSet):
         queryset = self.querysets.get(self.action, self.queryset)
 
         if isinstance(queryset, QuerySet):
-            return queryset.filter(**kwargs).all()
+            return queryset.filter(**filters).all()
 
         if callable(queryset):
             queryset = queryset()
             if isinstance(queryset, QuerySet):
-                return queryset.filter(**kwargs).all()
+                return queryset.filter(**filters).all()
 
         if isinstance(queryset, dict):
             queryset = queryset.get(self.request.method.lower(), self.queryset)
             if callable(queryset):
                 queryset = queryset()
                 if isinstance(queryset, QuerySet):
-                    return queryset.filter(**kwargs).all()
+                    return queryset.filter(**filters).all()
 
         return queryset
 
@@ -111,9 +111,10 @@ class CoreViewSet(viewsets.GenericViewSet):
         queryset lookups.  Eg if objects are referenced using multiple
         keyword arguments in the url conf.
         """
-
-        queryset = self.filter_queryset(self.queryset or self.get_queryset())
-
+        if self.queryset is not None:
+            queryset = self.filter_queryset(self.queryset)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
         # Perform the lookup filtering.
         lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
 
