@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
-from drf_yasg.utils import swagger_auto_schema
+# from drf_yasg.utils import swagger_auto_schema
 from apps.core.viewsets import CoreViewSet
 from apps.tasties.filters import TastyFilter
 from apps.tasties.serializers import (
@@ -17,6 +17,7 @@ from apps.tasties.querysets import (
 )
 from apps.tasties.models import Tasty
 from apps.tasties import services as tasty_service
+from apps.user import services as user_service
 
 
 class TastyFoodViewSet(
@@ -53,33 +54,48 @@ class TastyFoodViewSet(
         'update': get_all_tasties,
     }
 
+    def list(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            user_tags = user_service.get_user_favorite_tags(
+                user=self.request.user
+            )
+            self.queryset = self.filter_queryset(self.get_queryset().filter(
+                tags__overlap=user_tags
+            ))
+            return Response(
+                status=status.HTTP_200_OK,
+                data=self.get_serializer(self.queryset, many=True).data
+            )
+
+        return super(TastyFoodViewSet, self).list(request, *args, **kwargs)
+
     def update(self, request, *args, **kwargs):
         chef = self.request.user
         self.queryset = self.get_queryset(chef_id=chef.id)
         return super(TastyFoodViewSet, self).update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
-        query_serializer=None,
-        responses={
-            status.HTTP_200_OK: None
-        }
-    )
+    # @swagger_auto_schema(
+    #     query_serializer=None,
+    #     responses={
+    #         status.HTTP_200_OK: None
+    #     }
+    # )
     @action(methods=['POST'], detail=True, url_path='like')
-    def like(self, request, *args, **kwargs):
+    def like(self, request, *args, **kwargs): # noqa
         tasty = self.get_object()
         user = request.user
         if user.id not in tasty.liked_users_ids:
             tasty_service.like(tasty, user)
         return Response(status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
-        query_serializer=None,
-        responses={
-            status.HTTP_200_OK: None
-        }
-    )
+    # @swagger_auto_schema(
+    #     query_serializer=None,
+    #     responses={
+    #         status.HTTP_200_OK: None
+    #     }
+    # )
     @action(methods=['POST'], detail=True, url_path='rate')
-    def rate(self, request, *args, **kwargs):
+    def rate(self, request, *args, **kwargs): # noqa
         tasty = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -89,7 +105,7 @@ class TastyFoodViewSet(
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={
-                    "message": _('your rating already has been submited.')
+                    "message": _('your rating already has been submitted.')
                 }
             )
         tasty_service.rate(tasty, user, rating)

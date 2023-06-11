@@ -66,10 +66,23 @@ class TastyFoodInputSerializer(serializers.ModelSerializer):
 
 class ListTastyItemSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name')
+    chef = serializers.SerializerMethodField()
 
     class Meta:
         model = Tasty
         fields = ('id', 'title', 'img', 'recipe', 'tags', 'category', 'chef')
+
+    @staticmethod
+    def get_chef(tasty):
+        chef = tasty.chef
+        chef_data = dict(
+            user_id=chef.id,
+            profile_image=chef.profile if chef.profile else None,
+            chef_name=chef.full_name,
+            verified=chef.verified,
+        )
+
+        return chef_data
 
 
 class CreateRatingSerializer(serializers.ModelSerializer):
