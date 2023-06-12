@@ -2,15 +2,20 @@ from apps.tasties.models import Like
 from apps.user.models import User
 
 
-def get_user_favorite_tags(user: User) -> list:
+def get_user_favorites(user: User) -> tuple:
     """Takes user, returns user liked tags (tasties)"""
 
-    liked_tasties_tags = Like.objects.filter(
+    query_data = Like.objects.filter(
         user=user
     ).select_related(
-        'tasty__tags'
+        'tasty__tags',
+        'tasty__chef_id'
     ).only(
-        'tasty__tags'
-    ).values_list('tasty__tags', flat=True).first()
+        'tasty__tags',
+        'tasty__chef_id'
+    ).values_list('tasty__tags', 'tasty__chef_id')
 
-    return liked_tasties_tags
+    return (
+        [tag for like_item in query_data for tag in like_item[0]],
+        [like_item[1] for like_item in query_data]
+    )

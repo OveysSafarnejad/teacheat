@@ -14,10 +14,10 @@ from apps.tasties.serializers import (
 )
 from apps.tasties.querysets import (
     get_all_tasties,
+    get_timeline_queryset
 )
 from apps.tasties.models import Tasty
 from apps.tasties import services as tasty_service
-from apps.user import services as user_service
 
 
 class TastyFoodViewSet(
@@ -50,23 +50,17 @@ class TastyFoodViewSet(
     }
 
     querysets = {
-        'list': get_all_tasties,
+        'list': get_timeline_queryset,
         'update': get_all_tasties,
     }
 
     def list(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            user_tags = user_service.get_user_favorite_tags(
-                user=self.request.user
+        user = request.user
+        self.queryset = self.filter_queryset(
+            get_timeline_queryset(
+                user=user if user.is_authenticated else None
             )
-            self.queryset = self.filter_queryset(self.get_queryset().filter(
-                tags__overlap=user_tags
-            ))
-            return Response(
-                status=status.HTTP_200_OK,
-                data=self.get_serializer(self.queryset, many=True).data
-            )
-
+        )
         return super(TastyFoodViewSet, self).list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
