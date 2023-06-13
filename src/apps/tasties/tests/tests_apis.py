@@ -11,7 +11,7 @@ from rest_framework import status
 from apps.core.tests import BaseAPITestCase
 from apps.user.models import User
 from apps.general.models import FoodCategory
-from apps.tasties.models import Tasty
+from apps.tasties.models import Like, Tasty
 
 
 class TastyFoodsTestApi(BaseAPITestCase):
@@ -21,6 +21,7 @@ class TastyFoodsTestApi(BaseAPITestCase):
         self.category = baker.make(FoodCategory)
         self.other_chef_tasty = baker.make(Tasty, chef=self.other_chef)
         self.chef = baker.make(User)
+        self.chef_tasty = baker.make(Tasty, chef=self.chef)
 
         super().setUp()
 
@@ -143,5 +144,46 @@ class TastyFoodsTestApi(BaseAPITestCase):
             len(response['ingredients']),
             len(put_data['ingredients'])
         )
+
+    def test_timeline_unauthenticated_user(self):
+        url = reverse("tasties:tasty-list")
+        response = self.client.get(url)
+        response = json.loads(response.content)
+        self.assertEqual(len(response), 2)
+
+    def test_exclude_chef_tasties_from_her_timeline(self):
+        url = reverse("tasties:tasty-list")
+        self.client.force_authenticate(user=self.chef)
+        response = self.client.get(url)
+        response = json.loads(response.content)
+        self.assertEqual(len(response), 1)
+
+    def test_timeline_include_liked_tags_in_timeline(self):
+        url = reverse("tasties:tasty-list")
+        user_3 = baker.make(User)
+        liked_tasty = baker.make(Tasty, chef=user_3, tags=['a', 'b'])
+        baker.make(Tasty, chef=user_3, tags=['a', 'c'])
+        baker.make(Tasty, chef=user_3, tags=['d'])
+        baker.make(Like, user=self.chef, tasty=liked_tasty)
+        self.client.force_authenticate(user=self.chef)
+
+        response = self.client.get(url)
+        response = json.loads(response.content)
+
+        self.assertEqual(len(response), 4)
+
+    def test_timeline_include_liked_chef_other_tasties(self):
+        url = reverse("tasties:tasty-list")
+        user_3 = baker.make(User)
+        liked_tasty = baker.make(Tasty, chef=user_3)
+        baker.make(Tasty, chef=user_3)
+        baker.make(Tasty, chef=user_3)
+        baker.make(Like, user=self.chef, tasty=liked_tasty)
+        self.client.force_authenticate(user=self.chef)
+
+        response = self.client.get(url)
+        response = json.loads(response.content)
+
+        self.assertEqual(len(response), 4)
 
     # TODO: tasties filters should be tested

@@ -7,7 +7,7 @@ from apps.core.models import BaseModel
 from apps.tasties.enums import IngredientUnit
 
 
-def generate_image_path_for_tasty(instance, filename):
+def generate_image_path_for_tasty(instance, filename): # noqa
     """
     generates a unique image path for the file
 
@@ -25,7 +25,11 @@ class Ingredient(BaseModel):
         default=IngredientUnit.NUMBERS
     )
     name = models.CharField(max_length=100)
-    tasty = models.ForeignKey('tasties.Tasty', on_delete=models.CASCADE, related_name='ingredients')
+    tasty = models.ForeignKey(
+        'tasties.Tasty',
+        on_delete=models.CASCADE,
+        related_name='ingredients'
+    )
 
     class Meta:
         verbose_name = 'Ingredient'
@@ -43,8 +47,16 @@ class Tasty(BaseModel):
     duration = models.PositiveSmallIntegerField()
     tags = ArrayField(models.CharField(max_length=15))
 
-    chef = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='tasties')
-    category = models.ForeignKey('general.FoodCategory', on_delete=models.PROTECT, related_name='tasties')
+    chef = models.ForeignKey(
+        'user.User',
+        on_delete=models.PROTECT,
+        related_name='tasties'
+    )
+    category = models.ForeignKey(
+        'general.FoodCategory',
+        on_delete=models.PROTECT,
+        related_name='tasties'
+    )
 
     @property
     def liked_users_ids(self):
@@ -80,13 +92,29 @@ class Tasty(BaseModel):
 
 
 class Like(BaseModel):
-    user = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='likes')
-    tasty = models.ForeignKey('tasties.Tasty', on_delete=models.PROTECT, related_name='likes')
+    user = models.ForeignKey(
+        'user.User',
+        on_delete=models.PROTECT,
+        related_name='likes'
+    )
+    tasty = models.ForeignKey(
+        'tasties.Tasty',
+        on_delete=models.PROTECT,
+        related_name='likes'
+    )
 
 
 class Rating(BaseModel):
-    user = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='ratings')
-    tasty = models.ForeignKey('tasties.Tasty', on_delete=models.PROTECT, related_name='ratings')
+    user = models.ForeignKey(
+        'user.User',
+        on_delete=models.PROTECT,
+        related_name='ratings'
+    )
+    tasty = models.ForeignKey(
+        'tasties.Tasty',
+        on_delete=models.PROTECT,
+        related_name='ratings'
+    )
     rating = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(5), MinValueValidator(1)]
     )
