@@ -3,7 +3,7 @@ from apps.tasties.models import Like, Rating
 
 def like(tasty, user) -> None:
     """
-    accepts a tasty instance and increase it's likes by one
+    accepts a tasty instance and increase its likes by one
 
     :param tasty: Tasty
     :param user: User
@@ -19,6 +19,7 @@ def rate(tasty, user, rating) -> None:
 
     :param tasty: Tasty
     :param user: User
+    :param rating: rate integer
 
     :rtype None
     """
